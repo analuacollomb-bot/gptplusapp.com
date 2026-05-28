@@ -1,5 +1,13 @@
 import type { Metadata } from "next";
-import { BookOpen, FileText, Globe2, PackageCheck, Settings2, ShieldAlert } from "lucide-react";
+import {
+  BookOpen,
+  FileText,
+  Globe2,
+  MessageCircle,
+  PackageCheck,
+  Settings2,
+  ShieldAlert,
+} from "lucide-react";
 import { ButtonLink } from "@/components/button-link";
 import { SectionHeading } from "@/components/section-heading";
 
@@ -53,6 +61,13 @@ const guideCards = [
       "管理 GPT怎么充值、Grok怎么充值、Claude Pro充值、Gemini Pro充值 等强搜索词专题页，专题页负责承接购买意图并向文章和商品入口导流。",
   },
   {
+    title: "实时博客导入",
+    icon: MessageCircle,
+    file: "scripts/import-telegram-posts.ts",
+    description:
+      "把陈鹏AI服务公开 Telegram 频道内容整理成 /telegram 专栏文章。脚本只读取公开预览页，也支持导入本地 HTML 备份。",
+  },
+  {
     title: "站点地图与收录",
     icon: Globe2,
     file: "app/sitemap.ts / app/robots.ts",
@@ -71,6 +86,7 @@ const guideCards = [
 const commands = [
   ["本地运行", "npm run dev"],
   ["抓取公开商品", "npm run scrape:products"],
+  ["导入 TG 公开频道", "npm run import:telegram"],
   ["生成文章", "npm run generate:articles"],
   ["生产构建", "npm run build"],
   ["查看 sitemap", "http://localhost:3000/sitemap.xml"],

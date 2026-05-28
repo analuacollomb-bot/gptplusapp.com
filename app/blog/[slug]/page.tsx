@@ -269,6 +269,26 @@ export default async function PostPage({ params }: PostPageProps) {
                 不做脱离平台规则的保证。充值结果与账号状态、平台规则、登录环境和风控策略有关。
               </p>
             </div>
+            {post.sourceUrl ? (
+              <div className="gold-card rounded-2xl p-5">
+                <h2 className="flex items-center gap-2 text-base font-black text-[#17110c]">
+                  <BookOpen aria-hidden="true" className="size-5 text-[#9a6a2f]" />
+                  频道来源
+                </h2>
+                <p className="mt-3 text-sm leading-7 text-[#6e6257]">
+                  本文来自陈鹏AI服务公开频道内容整理，网站版本补充了搜索用户更容易理解的检查清单和风险说明。
+                </p>
+                <ButtonLink
+                  external
+                  href={post.sourceUrl}
+                  icon={ArrowUpRight}
+                  variant="secondary"
+                  className="mt-4 w-full"
+                >
+                  查看频道原文
+                </ButtonLink>
+              </div>
+            ) : null}
             {product ? (
               <div className="gold-card rounded-2xl p-5">
                 <h2 className="flex items-center gap-2 text-base font-black text-[#17110c]">

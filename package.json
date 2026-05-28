@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "scrape:products": "tsx scripts/scrape-products.ts",
-    "generate:articles": "tsx scripts/generate-seo-articles.ts"
+    "generate:articles": "tsx scripts/generate-seo-articles.ts",
+    "import:telegram": "tsx scripts/import-telegram-posts.ts"
   },
   "dependencies": {
     "gray-matter": "^4.0.3",

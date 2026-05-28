@@ -41,6 +41,7 @@ content/products.generated.ts  爬虫生成的公开商品数据
 content/articleTopics.ts   批量 SEO 文章主题
 content/seo.ts             强搜索词专题页配置
 content/posts/*.md         Markdown/MDX 教程文章
+data/telegram-posts.json   Telegram 公开频道导入备份
 docs/google-indexing-standard.md  Google 收录执行标准
 ```
 
@@ -85,7 +86,7 @@ productUrl: "https://gpt3plus.com/item/56"
 `category` 支持：
 
 ```text
-ChatGPT / Claude / Gemini / Grok / YouTube / Spotify / X Premium / Midjourney / Poe / Perplexity / Other
+ChatGPT / Claude / Gemini / Grok / YouTube / Spotify / X Premium / Midjourney / Poe / Perplexity / 陈鹏AI服务 / Other
 ```
 
 文章页会根据 `productId` 自动显示相关商品卡片和自助下单按钮。
@@ -161,6 +162,59 @@ npm run generate:articles
 
 生成后建议人工抽查标题、正文、商品按钮和风险表述，不要出现脱离平台规则的夸大承诺。
 
+## 如何导入 Telegram 公开频道内容
+
+实时博客专栏地址：
+
+```text
+/telegram
+```
+
+默认导入频道：
+
+```text
+https://t.me/netfix666
+```
+
+运行：
+
+```bash
+npm run import:telegram
+```
+
+脚本会只读取 `https://t.me/s/netfix666` 公开预览页，不登录、不抓后台、不抓订单、不绕过验证码或反爬限制。导入后会生成：
+
+```text
+content/posts/telegram-netfix666-*.md
+data/telegram-posts.json
+```
+
+每篇文章会尽量保留频道原文要点，并补充 SEO 标题、关键词、适合谁、下单前检查清单、风险说明、FAQ 和自助下单入口。
+
+如果当前网络无法访问 Telegram，可以先把公开频道页面导出为 HTML，放到：
+
+```text
+data/netfix666.html
+```
+
+再运行：
+
+```bash
+npm run import:telegram -- --source=data/netfix666.html
+```
+
+如果你是频道主，也可以用 Telegram Desktop 导出频道 `result.json`，再运行：
+
+```bash
+npm run import:telegram -- --source=data/result.json
+```
+
+也可以限制导入数量：
+
+```bash
+npm run import:telegram -- --limit=50
+```
+
 ## 站长维护页
 
 本地或线上访问：
@@ -203,7 +257,7 @@ docs/google-indexing-standard.md
 https://gptplusapp.com/sitemap.xml
 ```
 
-再手动请求索引首页、`/topics`、四个产品页、强搜索词专题页和几篇核心文章。
+再手动请求索引首页、`/topics`、`/telegram`、四个产品页、强搜索词专题页、几篇核心文章和最新导入的实时博客文章。
 
 ## 部署到 Vercel
 

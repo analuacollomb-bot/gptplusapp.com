@@ -28,6 +28,7 @@ export const siteConfig = {
   domain: siteContent.domain,
   url: siteContent.baseUrl,
   productUrl: siteContent.primaryCtaUrl,
+  telegramUrl: siteContent.telegramUrl,
   avatar: siteContent.avatar,
   description: siteContent.heroSubtitle,
 };
@@ -350,6 +351,7 @@ export const footerColumns = [
     title: "知识库",
     links: [
       { label: "关键词专题", href: "/topics" },
+      { label: "实时博客", href: "/telegram" },
       { label: "全部教程", href: "/blog" },
       { label: "商品入口", href: "/products" },
       { label: "用户反馈", href: "/reviews" },
@@ -363,6 +365,7 @@ export const footerColumns = [
     title: "服务入口",
     links: [
       { label: "自助下单入口", href: siteConfig.productUrl, external: true },
+      { label: "Telegram 频道", href: siteConfig.telegramUrl, external: true },
       { label: "陈鹏AI服务", href: siteConfig.productUrl, external: true },
     ],
   },

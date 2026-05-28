@@ -11,6 +11,7 @@ export type ProductCategory =
   | "Midjourney"
   | "Poe"
   | "Perplexity"
+  | "陈鹏AI服务"
   | "Other";
 
 export type Product = {
@@ -102,6 +103,7 @@ export const productCategories: ProductCategory[] = [
   "Midjourney",
   "Poe",
   "Perplexity",
+  "陈鹏AI服务",
   "Other",
 ];
 

@@ -14,6 +14,7 @@ export type PostFrontmatter = {
   keywords: string[];
   productId: string;
   productUrl: string;
+  sourceUrl?: string;
 };
 
 export type Post = PostFrontmatter & {
@@ -110,6 +111,7 @@ function normalizeFrontmatter(data: Record<string, unknown>, filePath: string) {
     keywords,
     productId: String(data.productId),
     productUrl: String(data.productUrl),
+    sourceUrl: data.sourceUrl ? String(data.sourceUrl) : undefined,
   };
 }
 
@@ -144,6 +146,15 @@ export function getPostBySlug(slug: string) {
 
 export function getPostsByCategory(slug: string) {
   return getAllPosts().filter((post) => post.categorySlug === slug);
+}
+
+export function getTelegramPosts(limit?: number) {
+  const posts = getAllPosts().filter(
+    (post) =>
+      post.slug.startsWith("telegram-netfix666-") ||
+      post.keywords.some((keyword) => keyword.includes("陈鹏AI服务实时博客")),
+  );
+  return typeof limit === "number" ? posts.slice(0, limit) : posts;
 }
 
 export function getRelatedPosts(post: Post, limit = 3) {
