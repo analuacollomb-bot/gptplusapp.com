@@ -386,12 +386,17 @@ async function fetchText(url: string) {
 
 async function loadTelegramPosts({ channel, source, maxPages, limit }: ImportOptions) {
   if (source) {
-    const sourcePath = path.isAbsolute(source) ? source : path.join(rootDir, source);
-    const raw = await fs.readFile(sourcePath, "utf8");
-    const parsed = sourcePath.endsWith(".json")
-      ? parseTelegramExportJson(raw, channel)
-      : parseTelegramHtml(raw, channel);
-    return parsed.slice(0, limit);
+    const sourcePaths = await resolveSourcePaths(source);
+    const parsed = await Promise.all(
+      sourcePaths.map(async (sourcePath) => {
+        const raw = await fs.readFile(sourcePath, "utf8");
+        return sourcePath.endsWith(".json")
+          ? parseTelegramExportJson(raw, channel)
+          : parseTelegramHtml(raw, channel);
+      }),
+    );
+
+    return uniquePosts(parsed.flat()).slice(0, limit);
   }
 
   const collected = new Map<string, TelegramPost>();
@@ -422,6 +427,58 @@ async function loadTelegramPosts({ channel, source, maxPages, limit }: ImportOpt
   return Array.from(collected.values())
     .sort((a, b) => Number(b.id) - Number(a.id))
     .slice(0, limit);
+}
+
+async function resolveSourcePaths(source: string) {
+  const sourcePath = path.isAbsolute(source) ? source : path.join(rootDir, source);
+  const stats = await fs.stat(sourcePath);
+
+  if (!stats.isDirectory()) {
+    return [sourcePath];
+  }
+
+  const files = await findTelegramExportFiles(sourcePath);
+  if (files.length === 0) {
+    throw new Error(`目录中没有找到 messages*.html 或 result.json：${sourcePath}`);
+  }
+
+  return files;
+}
+
+async function findTelegramExportFiles(directory: string): Promise<string[]> {
+  const entries = await fs.readdir(directory, { withFileTypes: true });
+  const files: string[] = [];
+
+  for (const entry of entries) {
+    const entryPath = path.join(directory, entry.name);
+
+    if (entry.isDirectory()) {
+      files.push(...(await findTelegramExportFiles(entryPath)));
+      continue;
+    }
+
+    if (/^messages.*\.html$/.test(entry.name) || entry.name === "result.json") {
+      files.push(entryPath);
+    }
+  }
+
+  return files.sort();
+}
+
+function uniquePosts(posts: TelegramPost[]) {
+  const map = new Map<string, TelegramPost>();
+
+  for (const post of posts) {
+    const key = makeSlug(post);
+    const existing = map.get(key);
+    if (!existing || post.text.length > existing.text.length) {
+      map.set(key, post);
+    }
+  }
+
+  return Array.from(map.values()).sort(
+    (a, b) => Number(new Date(b.date)) - Number(new Date(a.date)) || Number(b.id) - Number(a.id),
+  );
 }
 
 function detectCategory(text: string): ProductCategory {
@@ -550,6 +607,23 @@ function makeAnalysis(category: ProductCategory, title: string) {
   ].join("\n\n");
 }
 
+function makePreOrderNotice() {
+  return [
+    "✅嗨客户朋友你好！注意：网站首次访问较慢，多刷新1下即可打开…（挂🪜翻墙更快，能买~）",
+    "",
+    "✅下单前请先阅读商品说明（每件商品已写清使用方式/注意事项/常见问题），看完再下单更省时间。",
+    "✅本网站提供的账号仅限学习与研究使用，严禁任何违规行为。",
+    "✅所有账号渠道开通，支持长期使用与续费。",
+    "✅微信客服：Dcpluspro（早10点，晚24点）",
+    "✅如果遇到未付款，刷新网页就行，这是支付回调问题，还无法联系我们的客服！",
+    "✅提醒仿冒网站，仿冒客服，保护您的资金安全！",
+    "",
+    "✅【其他说明】本店靠谱经营，优质售后，上线已超过1年。购买前看清楚商品描述，不看商品描述导致的问题一概不售后！虚拟产品售出不支持退款",
+    "",
+    "✅请填写正确的下单邮箱，否则无法查询订单、无法收到商品，请注意！⚠",
+  ].join("\n");
+}
+
 function makeArticle(post: TelegramPost) {
   const category = detectCategory(post.text);
   const product = matchProduct(post, category);
@@ -581,7 +655,7 @@ sourceUrl: "${escapeFrontmatter(post.sourceUrl)}"
 
 ${paragraphizeOriginal(post.text)}
 
-## 军师解读
+## 陈鹏AI服务
 
 ${makeAnalysis(category, title)}
 
@@ -598,14 +672,9 @@ ${makeAnalysis(category, title)}
 
 如果你看到频道里提到某个商品、活动或处理方式，建议不要只截取其中一句话下单。更稳妥的做法是把原文、商品页说明和自己的账号状态放在一起看：商品支持什么账号，不支持什么账号，需要提交哪些信息，售后处理边界写在哪里。
 
-## 下单前检查清单
+## 下单前清单
 
-- 当前账号是否能正常登录，是否可以完成必要验证。
-- 当前会员状态是否符合商品说明，例如 Free、Plus、Pro、Max 或其他状态。
-- 是否存在 overdue、扣款失败、取消订阅未完成、历史退款等账单问题。
-- 下单邮箱、账号邮箱、X/Google/Claude 组织信息是否填写正确。
-- 是否已经阅读商品页的处理规则、时效说明和售后要求。
-- 是否接受平台规则变化和账号风控带来的不确定性。
+${makePreOrderNotice()}
 
 ## 风险说明
 
@@ -643,9 +712,7 @@ async function writePosts(posts: TelegramPost[]) {
   await fs.mkdir(postsDir, { recursive: true });
   await fs.mkdir(dataDir, { recursive: true });
 
-  const normalized = posts.filter(
-    (post, index, array) => array.findIndex((item) => item.id === post.id) === index,
-  );
+  const normalized = uniquePosts(posts);
 
   await fs.writeFile(
     path.join(dataDir, "telegram-posts.json"),

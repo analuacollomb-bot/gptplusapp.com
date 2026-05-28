@@ -47,7 +47,7 @@ export default function AboutPage() {
                 <p className="text-sm font-black uppercase tracking-[0.16em] text-[#f0d89a]">
                   {siteConfig.chineseBrand}
                 </p>
-                <p className="mt-2 text-2xl font-black">AI 工具使用军师</p>
+                <p className="mt-2 text-2xl font-black">陈鹏AI服务</p>
                 <p className="mt-2 text-sm leading-6 text-[#ead9b8]">
                   账号开通避坑指南 / 长期知识库 / 自助下单前判断
                 </p>

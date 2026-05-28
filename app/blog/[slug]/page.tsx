@@ -226,7 +226,7 @@ export default async function PostPage({ params }: PostPageProps) {
           <article className="gold-card min-w-0 rounded-2xl p-5 sm:p-8 lg:p-10">
             <div className="mb-8 rounded-2xl border border-[#ead9b8] bg-[#fff5dc] p-5">
               <p className="text-sm font-black uppercase tracking-[0.16em] text-[#9a6a2f]">
-                军师提示
+                陈鹏AI服务提示
               </p>
               <p className="mt-3 text-sm leading-7 text-[#5c5147]">
                 本文适合下单前核对账号状态、了解风险边界和比较不同开通方式。商品规则可能变化，请以自助下单页说明为准。
@@ -387,7 +387,7 @@ export default async function PostPage({ params }: PostPageProps) {
               Before Order
             </p>
             <h2 className="mt-3 text-2xl font-black text-[#17110c]">
-              下单前请确认
+              下单前清单
             </h2>
             <div className="mt-6 grid gap-3 sm:grid-cols-2">
               {preOrderChecklist.map((item) => (

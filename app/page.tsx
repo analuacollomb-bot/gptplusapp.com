@@ -40,7 +40,7 @@ export default function Home() {
           <div>
             <div className="inline-flex items-center gap-2 rounded-xl border border-[#f0d89a]/30 bg-[#fffaf0]/10 px-3 py-2 text-sm font-bold text-[#f0d89a] backdrop-blur">
               <Compass aria-hidden="true" className="size-4" />
-              AI 工具开通避坑军师
+              陈鹏AI服务开通避坑指南
             </div>
             <h1 className="mt-7 text-4xl font-black tracking-tight sm:text-6xl">
               {siteContent.heroTitle}
@@ -308,8 +308,8 @@ export default function Home() {
         <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
           <SectionHeading
             eyebrow="Before Order"
-            title="下单前检查清单"
-            description="自助下单前先逐项核对，特别是账号状态、欠款、登录验证和商品规则。"
+            title="下单前清单"
+            description="购买前先看清商品说明、客服时间、邮箱填写、支付回调和售后边界。"
           />
           <div className="grid gap-3 sm:grid-cols-2">
             {preOrderChecklist.map((item) => (

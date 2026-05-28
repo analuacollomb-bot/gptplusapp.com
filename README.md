@@ -215,6 +215,12 @@ npm run import:telegram -- --source=data/result.json
 npm run import:telegram -- --limit=50
 ```
 
+如果 Telegram Desktop 里有多个导出文件夹，可以直接把整个导出父目录传给脚本，脚本会递归读取所有 `messages*.html` 和 `result.json`，并按文章 slug 去重：
+
+```bash
+npm run import:telegram -- --source="/Users/cp/Downloads/Telegram Desktop" --limit=1000
+```
+
 ## 站长维护页
 
 本地或线上访问：

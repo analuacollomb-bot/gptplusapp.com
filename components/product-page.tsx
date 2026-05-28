@@ -151,8 +151,8 @@ export function ProductPage({ slug }: { slug: CategorySlug }) {
         <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.8fr_1.2fr]">
           <SectionHeading
             eyebrow="Checklist"
-            title="下单前检查清单"
-            description={category.beforeOrder}
+            title="下单前清单"
+            description="购买前先看清商品说明、客服时间、邮箱填写、支付回调和售后边界。"
           />
           <div className="grid gap-3 sm:grid-cols-2">
             {preOrderChecklist.map((item) => (
