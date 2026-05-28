@@ -43,7 +43,14 @@ const guideCards = [
     icon: BookOpen,
     file: "content/articleTopics.ts",
     description:
-      "运行批量生成脚本后会输出文章主题列表，方便你后续审稿、补充关键词和调整搜索意图。",
+      "运行批量生成脚本后会输出文章主题列表。当前策略是先围绕 ChatGPT / Claude / Gemini / Grok 各铺 100 篇问题型教程，再按收录和搜索词表现精修。",
+  },
+  {
+    title: "关键词专题页",
+    icon: BookOpen,
+    file: "content/seo.ts",
+    description:
+      "管理 GPT怎么充值、Grok怎么充值、Claude Pro充值、Gemini Pro充值 等强搜索词专题页，专题页负责承接购买意图并向文章和商品入口导流。",
   },
   {
     title: "站点地图与收录",
@@ -68,6 +75,7 @@ const commands = [
   ["生产构建", "npm run build"],
   ["查看 sitemap", "http://localhost:3000/sitemap.xml"],
   ["查看 robots", "http://localhost:3000/robots.txt"],
+  ["收录执行标准", "docs/google-indexing-standard.md"],
 ];
 
 export default function AdminContentGuidePage() {

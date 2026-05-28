@@ -1,10 +1,12 @@
 import type { MetadataRoute } from "next";
+import { seoKeywordPages } from "@/content/seo";
 import { getAllPosts } from "@/lib/posts";
 import { categories, siteConfig } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticRoutes = [
     "",
+    "/topics",
     "/products",
     "/blog",
     "/reviews",
@@ -16,6 +18,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     lastModified: new Date(),
     changeFrequency: "weekly" as const,
     priority: route === "" ? 1 : route === "/products" ? 0.9 : 0.8,
+  }));
+
+  const topicRoutes = seoKeywordPages.map((page) => ({
+    url: `${siteConfig.url}/topics/${page.slug}`,
+    lastModified: new Date(),
+    changeFrequency: "weekly" as const,
+    priority: 0.88,
   }));
 
   const categoryRoutes = categories.map((category) => ({
@@ -32,5 +41,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.75,
   }));
 
-  return [...staticRoutes, ...categoryRoutes, ...postRoutes];
+  return [...staticRoutes, ...categoryRoutes, ...topicRoutes, ...postRoutes];
 }

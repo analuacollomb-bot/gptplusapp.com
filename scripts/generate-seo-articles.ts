@@ -2,21 +2,24 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { products, type Product, type ProductCategory } from "../content/products";
 
+type CoreCategory = "ChatGPT" | "Claude" | "Gemini" | "Grok";
+
 type ArticleType =
   | "充值教程"
   | "支付失败"
   | "区别科普"
   | "账号风控"
   | "下单检查"
-  | "使用教程";
+  | "使用技巧";
 
 type TopicSeed = {
   title: string;
   slug: string;
-  category: ProductCategory;
+  category: CoreCategory;
   keywords: string[];
   searchIntent: string;
   articleType: ArticleType;
+  scenario: string;
 };
 
 type ArticleTopic = TopicSeed & {
@@ -24,10 +27,29 @@ type ArticleTopic = TopicSeed & {
   ctaProductUrl: string;
 };
 
+type CategoryProfile = {
+  category: CoreCategory;
+  slugPrefix: string;
+  productName: string;
+  subjects: Array<{ label: string; slug: string; keyword: string }>;
+  special: Array<[string, string, string, ArticleType, string]>;
+  strengths: string[];
+  accountFocus: string[];
+};
+
+type Pattern = {
+  label: string;
+  slug: string;
+  keyword: string;
+  articleType: ArticleType;
+  intent: string;
+};
+
 const rootDir = process.cwd();
 const postsDir = path.join(rootDir, "content/posts");
 const topicsPath = path.join(rootDir, "content/articleTopics.ts");
-const today = new Date().toISOString().slice(0, 10);
+const publishDate = "2026-05-28";
+
 const fallbackProduct: Product = {
   id: "general-ai-membership",
   title: "AI 会员自助下单总入口",
@@ -41,166 +63,168 @@ const fallbackProduct: Product = {
   notices: ["先阅读商品说明"],
   suitableFor: ["需要先浏览商品分类的用户"],
   riskNotes: ["虚拟产品受账号状态和平台规则影响"],
-  updatedAt: today,
+  updatedAt: publishDate,
 };
 
-const seeds: TopicSeed[] = [
-  ...makeSeeds("ChatGPT", [
-    ["ChatGPT Plus 国内充值教程", "chatgpt-plus-guonei-chongzhi", "ChatGPT Plus充值"],
-    ["ChatGPT Plus 支付失败怎么办", "chatgpt-plus-zhifu-shibai", "ChatGPT Plus支付失败"],
-    ["ChatGPT Plus 和 Pro 有什么区别", "chatgpt-plus-pro-qubie", "ChatGPT Plus Pro区别"],
-    ["ChatGPT Pro 国内开通前注意事项", "chatgpt-pro-guonei-kaitong-zhuyi", "ChatGPT Pro开通"],
-    ["ChatGPT 账号充值前怎么检查状态", "chatgpt-zhanghao-zhuangtai-jiancha", "ChatGPT账号状态"],
-    ["ChatGPT Plus overdue 欠款怎么处理", "chatgpt-plus-overdue-qianfei", "ChatGPT overdue"],
-    ["ChatGPT Plus 虚拟卡失败后还能怎么开通", "chatgpt-plus-xunika-shibai", "ChatGPT虚拟卡失败"],
-    ["ChatGPT Plus 需要提供密码吗", "chatgpt-plus-xuyao-mima-ma", "ChatGPT Plus密码"],
-    ["ChatGPT Plus 自动发货商品怎么理解", "chatgpt-plus-zidong-fahuo-shuoming", "ChatGPT自动发货"],
-    ["ChatGPT Plus 人工代充和自助充值怎么选", "chatgpt-plus-rengong-zizhu-duibi", "ChatGPT代充自助充值"],
-    ["ChatGPT Plus 续费前需要注意什么", "chatgpt-plus-xufei-zhuyi", "ChatGPT Plus续费"],
-    ["ChatGPT Plus 新号和老号都能充值吗", "chatgpt-plus-xinhao-laohao", "ChatGPT新号老号"],
-    ["ChatGPT Plus 登录邮箱填错怎么办", "chatgpt-plus-youxiang-tiancuo", "ChatGPT邮箱填错"],
-    ["ChatGPT Plus 充值后没有生效怎么办", "chatgpt-plus-chongzhi-weishengxiao", "ChatGPT充值未生效"],
-    ["ChatGPT Plus 风控风险有哪些", "chatgpt-plus-fengkong-risk", "ChatGPT风控"],
-    ["ChatGPT Plus Gmail 登录账号充值注意事项", "chatgpt-plus-gmail-zhanghao", "ChatGPT Gmail充值"],
-    ["ChatGPT Plus Apple ID 登录账号充值说明", "chatgpt-plus-apple-id", "ChatGPT Apple ID"],
-    ["ChatGPT Plus 成品号和充值自己号区别", "chatgpt-plus-chengpinhao-zijihao", "ChatGPT成品号"],
-    ["ChatGPT Pro 20X 适合哪些用户", "chatgpt-pro-20x-shihe", "ChatGPT Pro 20X"],
-    ["ChatGPT Codex 验证相关问题说明", "chatgpt-codex-yanzheng", "ChatGPT Codex验证"],
-    ["ChatGPT Plus 下单前必读清单", "chatgpt-plus-xiadan-qingdan", "ChatGPT下单清单"],
-    ["ChatGPT Plus 账号共享为什么有风险", "chatgpt-plus-gongxiang-risk", "ChatGPT账号共享"],
-    ["ChatGPT Plus 国内用户常见误区", "chatgpt-plus-guonei-wuqu", "ChatGPT国内误区"],
-    ["ChatGPT Plus 支付环境和 IP 环境说明", "chatgpt-plus-ip-huanjing", "ChatGPT IP环境"],
-    ["ChatGPT Plus 自助下单后如何查看教程", "chatgpt-plus-xiadan-hou-jiaocheng", "ChatGPT下单教程"],
-  ]),
-  ...makeSeeds("Claude", [
-    ["Claude Pro 充值前注意事项", "claude-pro-chongzhi-zhuyi", "Claude Pro充值"],
-    ["Claude Pro 组织 ID 是什么", "claude-pro-organization-id", "Claude组织ID"],
-    ["Claude Pro 和 Max 有什么区别", "claude-pro-max-qubie", "Claude Pro Max区别"],
-    ["Claude 当前是 Pro 还能下单吗", "claude-pro-yijing-kaitong-xiadan", "Claude Pro下单"],
-    ["Claude Max 充值前需要确认什么", "claude-max-chongzhi-qian-jiancha", "Claude Max充值"],
-    ["Claude Free 账号状态怎么判断", "claude-free-zhanghao-zhuangtai", "Claude Free账号"],
-    ["Claude overdue 欠款怎么处理", "claude-overdue-qianfei-chuli", "Claude overdue"],
-    ["Claude 支付失败常见原因", "claude-zhifu-shibai-yuanyin", "Claude支付失败"],
-    ["Claude 登录环境异常会影响充值吗", "claude-denglu-huanjing-fengkong", "Claude登录环境"],
-    ["Claude Pro 国内用户开通教程", "claude-pro-guonei-kaitong", "Claude Pro国内开通"],
-    ["Claude Pro 充值需要密码吗", "claude-pro-xuyao-mima-ma", "Claude Pro密码"],
-    ["Claude 账号被限制还能开会员吗", "claude-zhanghao-xianzhi-huiyuan", "Claude账号限制"],
-    ["Claude API 和 Claude Pro 是一回事吗", "claude-api-pro-qubie", "Claude API Pro区别"],
-    ["Claude 工作区和组织信息怎么区分", "claude-workspace-organization", "Claude工作区"],
-    ["Claude Pro 下单邮箱怎么填写", "claude-pro-youxiang-tianxie", "Claude下单邮箱"],
-    ["Claude Pro 充值后没有生效怎么办", "claude-pro-weishengxiao", "Claude充值未生效"],
-    ["Claude Pro 虚拟卡失败后怎么办", "claude-pro-xunika-shibai", "Claude虚拟卡失败"],
-    ["Claude Pro 账号风控风险说明", "claude-pro-fengkong-risk", "Claude风控"],
-    ["Claude Max 适合哪些用户", "claude-max-shihe-yonghu", "Claude Max适合谁"],
-    ["Claude Pro 写作用户开通建议", "claude-pro-xiezuo-yonghu", "Claude写作"],
-    ["Claude Pro 代码用户开通建议", "claude-pro-daima-yonghu", "Claude代码"],
-    ["Claude Pro 长文档用户开通建议", "claude-pro-changwendang", "Claude长文档"],
-    ["Claude 充值商品说明怎么看", "claude-chongzhi-shangpin-shuoming", "Claude商品说明"],
-    ["Claude 下单前必读清单", "claude-xiadan-qian-qingdan", "Claude下单清单"],
-    ["Claude 售后沟通需要提供什么", "claude-shouhou-goutong-cailiao", "Claude售后"],
-  ]),
-  ...makeSeeds("Gemini", [
-    ["Gemini Pro 国内使用教程", "gemini-pro-guonei-shiyong", "Gemini Pro国内使用"],
-    ["Gemini Advanced 开通注意事项", "gemini-advanced-kaitong-zhuyi", "Gemini Advanced开通"],
-    ["Gemini Pro 支付失败怎么办", "gemini-pro-zhifu-shibai", "Gemini支付失败"],
-    ["Gemini Google 账号地区怎么影响开通", "gemini-google-diqu-yingxiang", "Gemini账号地区"],
-    ["Gemini 多账号登录容易踩哪些坑", "gemini-duozhanghao-denglu", "Gemini多账号"],
-    ["Gemini Pro 和 Advanced 有什么区别", "gemini-pro-advanced-qubie", "Gemini Pro Advanced区别"],
-    ["Gemini 付款资料异常怎么判断", "gemini-fukuan-ziliao-yichang", "Google付款资料"],
-    ["Gemini 家庭组和年龄限制说明", "gemini-jiatingzu-nianling", "Gemini家庭组"],
-    ["Gemini 工作邮箱适合开会员吗", "gemini-workspace-youxiang", "Gemini工作邮箱"],
-    ["Gemini Pro 下单前检查清单", "gemini-pro-xiadan-qingdan", "Gemini下单清单"],
-    ["Gemini 会员开通后找不到入口怎么办", "gemini-huiyuan-rukou", "Gemini入口"],
-    ["Gemini Pro 国内访问环境说明", "gemini-pro-fangwen-huanjing", "Gemini访问环境"],
-    ["Gemini 充值需要注意哪些风险", "gemini-chongzhi-risk", "Gemini风控"],
-    ["Gemini Google 生态用户开通建议", "gemini-google-shengtai-jianyi", "Gemini Google生态"],
-    ["Gemini 自助下单后如何核对账号", "gemini-zizhu-xiadan-hedui", "Gemini自助下单"],
-  ]),
-  ...makeSeeds("Grok", [
-    ["Grok 会员开通教程", "grok-huiyuan-kaitong", "Grok会员开通"],
-    ["Grok 和 SuperGrok 有什么区别", "grok-supergrok-qubie", "Grok SuperGrok区别"],
-    ["Grok 国内开通前需要准备什么", "grok-guonei-kaitong-zhunbei", "Grok国内开通"],
-    ["Grok X 账号状态怎么检查", "grok-x-zhanghao-zhuangtai", "Grok X账号"],
-    ["Grok 支付失败常见原因", "grok-zhifu-shibai", "Grok支付失败"],
-    ["SuperGrok 适合哪些用户", "supergrok-shihe-yonghu", "SuperGrok适合谁"],
-    ["Grok 会员和 X Premium 有什么关系", "grok-x-premium-guanxi", "Grok X Premium"],
-    ["Grok 账号地区和 IP 环境说明", "grok-diqu-ip-huanjing", "Grok IP环境"],
-    ["Grok 开通后找不到入口怎么办", "grok-kaitong-rukou", "Grok入口"],
-    ["Grok 下单邮箱和 X 账号怎么填", "grok-youxiang-x-zhanghao", "Grok下单邮箱"],
-    ["Grok 账号受限还能下单吗", "grok-zhanghao-xianshi-xiadan", "Grok账号受限"],
-    ["Grok 自助下单前必读清单", "grok-zizhu-xiadan-qingdan", "Grok自助下单"],
-    ["Grok 充值后可能遇到哪些风控", "grok-chongzhi-fengkong", "Grok风控"],
-    ["Grok 新手用户开通建议", "grok-xinshou-kaitong-jianyi", "Grok新手"],
-    ["Grok 售后沟通需要哪些截图", "grok-shouhou-jietu", "Grok售后截图"],
-  ]),
-  ...makeSeeds("YouTube", [
-    ["YouTube Premium 国内开通说明", "youtube-premium-guonei-kaitong", "YouTube Premium开通"],
-    ["YouTube Premium 会员下单前注意事项", "youtube-premium-xiadan-zhuyi", "YouTube会员注意事项"],
-    ["YouTube Premium 家庭组和地区问题说明", "youtube-premium-jiatingzu-diqu", "YouTube地区"],
-    ["YouTube Premium 支付失败怎么办", "youtube-premium-zhifu-shibai", "YouTube支付失败"],
-  ]),
-  ...makeSeeds("Spotify", [
-    ["Spotify 会员使用说明", "spotify-huiyuan-shiyong", "Spotify会员"],
-    ["Spotify Premium 国内开通注意事项", "spotify-premium-guonei-kaitong", "Spotify Premium开通"],
-    ["Spotify 账号地区和会员规则说明", "spotify-zhanghao-diqu-guize", "Spotify地区"],
-  ]),
-  ...makeSeeds("X Premium", [
-    ["X Premium 国内开通教程", "x-premium-guonei-kaitong", "X Premium开通"],
-    ["X Premium 和 Grok 会员关系说明", "x-premium-grok-guanxi", "X Premium Grok"],
-    ["X Premium 支付失败和账号状态检查", "x-premium-zhifu-zhanghao-jiancha", "X Premium支付失败"],
-  ]),
-  ...makeSeeds("Midjourney", [
-    ["Midjourney 会员开通前注意事项", "midjourney-huiyuan-kaitong-zhuyi", "Midjourney会员"],
-    ["Midjourney 国内支付失败怎么办", "midjourney-zhifu-shibai", "Midjourney支付失败"],
-    ["Midjourney 账号和订阅规则说明", "midjourney-zhanghao-dingyue-guize", "Midjourney订阅"],
-  ]),
-  ...makeSeeds("Poe", [
-    ["Poe 会员开通说明", "poe-huiyuan-kaitong-shuoming", "Poe会员"],
-    ["Poe 国内使用和订阅注意事项", "poe-guonei-shiyong-dingyue", "Poe订阅"],
-  ]),
-  ...makeSeeds("Perplexity", [
-    ["Perplexity Pro 国内开通教程", "perplexity-pro-guonei-kaitong", "Perplexity Pro开通"],
-    ["Perplexity Pro 代充和成品号怎么选", "perplexity-pro-daichong-chengpinhao", "Perplexity代充"],
-    ["Perplexity Pro AI 搜索用户开通建议", "perplexity-pro-ai-sousuo-jianyi", "Perplexity AI搜索"],
-  ]),
-  ...makeSeeds("Other", [
-    ["AI 会员自助下单前通用检查清单", "ai-huiyuan-zizhu-xiadan-qingdan", "AI会员自助下单"],
-    ["AI 工具充值失败时如何判断原因", "ai-gongju-chongzhi-shibai-panduan", "AI工具充值失败"],
-    ["虚拟产品下单前为什么必须看说明", "xuni-chanpin-xiadan-kan-shuoming", "虚拟产品说明"],
-    ["AI 会员售后沟通需要准备哪些材料", "ai-huiyuan-shouhou-cailiao", "AI会员售后"],
-    ["如何根据使用场景选择 AI 会员", "ruhe-xuanze-ai-huiyuan", "选择AI会员"],
-  ]),
+const profiles: CategoryProfile[] = [
+  {
+    category: "ChatGPT",
+    slugPrefix: "chatgpt",
+    productName: "ChatGPT",
+    subjects: [
+      { label: "ChatGPT Plus", slug: "chatgpt-plus", keyword: "ChatGPT Plus" },
+      { label: "GPT Plus", slug: "gpt-plus", keyword: "GPT Plus" },
+      { label: "ChatGPT Pro", slug: "chatgpt-pro", keyword: "ChatGPT Pro" },
+      { label: "ChatGPT 账号", slug: "chatgpt-zhanghao", keyword: "ChatGPT账号" },
+      { label: "GPT 会员", slug: "gpt-huiyuan", keyword: "GPT会员" },
+    ],
+    strengths: ["通用问答", "写作办公", "代码辅助", "文件分析", "多模态使用"],
+    accountFocus: ["Free / Plus / Pro 状态", "overdue 欠款", "邮箱登录方式", "支付环境", "账号风控"],
+    special: [
+      ["ChatGPT Plus 国内充值教程", "chatgpt-plus-guonei-chongzhi", "ChatGPT Plus充值", "充值教程", "国内用户下单前判断"],
+      ["GPT怎么充值比较稳", "gpt-zenme-chongzhi", "GPT怎么充值", "充值教程", "强购买意图"],
+      ["Plus怎么充不会反复踩坑", "plus-zenme-chong", "Plus怎么充", "下单检查", "下单前检查"],
+      ["ChatGPT Plus和Pro有什么区别", "chatgpt-plus-pro-qubie", "ChatGPT Plus Pro区别", "区别科普", "会员选择"],
+      ["ChatGPT Plus支付失败怎么办", "chatgpt-plus-zhifu-shibai", "ChatGPT Plus支付失败", "支付失败", "失败排查"],
+      ["ChatGPT账号风控风险有哪些", "chatgpt-zhanghao-fengkong-risk", "ChatGPT账号风控", "账号风控", "账号状态"],
+    ],
+  },
+  {
+    category: "Claude",
+    slugPrefix: "claude",
+    productName: "Claude",
+    subjects: [
+      { label: "Claude Pro", slug: "claude-pro", keyword: "Claude Pro" },
+      { label: "Claude Max", slug: "claude-max", keyword: "Claude Max" },
+      { label: "Claude 账号", slug: "claude-zhanghao", keyword: "Claude账号" },
+      { label: "Claude 会员", slug: "claude-huiyuan", keyword: "Claude会员" },
+      { label: "Claude 组织 ID", slug: "claude-organization-id", keyword: "Claude组织ID" },
+    ],
+    strengths: ["长文档处理", "写作润色", "代码阅读", "研究总结", "长上下文分析"],
+    accountFocus: ["Free / Pro / Max 状态", "Organization ID", "overdue 欠款", "工作区信息", "账号地区"],
+    special: [
+      ["Claude Pro 充值前注意事项", "claude-pro-chongzhi-zhuyi", "Claude Pro充值", "下单检查", "充值前判断"],
+      ["Claude Pro 组织 ID 是什么", "claude-pro-organization-id", "Claude组织ID", "账号风控", "组织信息"],
+      ["Claude Pro和Max有什么区别", "claude-pro-max-qubie", "Claude Pro Max区别", "区别科普", "会员选择"],
+      ["Claude当前是Pro还能下单吗", "claude-pro-yijing-kaitong-xiadan", "Claude Pro下单", "下单检查", "已有会员"],
+      ["Claude overdue欠款怎么处理", "claude-overdue-qianfei-chuli", "Claude overdue", "账号风控", "账单问题"],
+      ["Claude支付失败常见原因", "claude-zhifu-shibai-yuanyin", "Claude支付失败", "支付失败", "失败排查"],
+    ],
+  },
+  {
+    category: "Gemini",
+    slugPrefix: "gemini",
+    productName: "Gemini",
+    subjects: [
+      { label: "Gemini Pro", slug: "gemini-pro", keyword: "Gemini Pro" },
+      { label: "Gemini Advanced", slug: "gemini-advanced", keyword: "Gemini Advanced" },
+      { label: "Gemini 账号", slug: "gemini-zhanghao", keyword: "Gemini账号" },
+      { label: "Google AI 会员", slug: "google-ai-huiyuan", keyword: "Google AI会员" },
+      { label: "Gemini 国内使用", slug: "gemini-guonei-shiyong", keyword: "Gemini国内使用" },
+    ],
+    strengths: ["Google 生态", "多模态处理", "文档协作", "搜索增强", "手机端联动"],
+    accountFocus: ["Google 账号地区", "付款资料", "家庭组", "工作邮箱", "多账号登录"],
+    special: [
+      ["Gemini Pro 国内使用教程", "gemini-pro-guonei-shiyong", "Gemini Pro国内使用", "使用技巧", "国内使用"],
+      ["Gemini Advanced开通注意事项", "gemini-advanced-kaitong-zhuyi", "Gemini Advanced开通", "下单检查", "开通前判断"],
+      ["Gemini Pro支付失败怎么办", "gemini-pro-zhifu-shibai", "Gemini支付失败", "支付失败", "失败排查"],
+      ["Gemini Google账号地区怎么影响开通", "gemini-google-diqu-yingxiang", "Gemini账号地区", "账号风控", "账号地区"],
+      ["Gemini多账号登录容易踩哪些坑", "gemini-duozhanghao-denglu", "Gemini多账号", "下单检查", "多账号误判"],
+      ["Gemini Pro和Advanced有什么区别", "gemini-pro-advanced-qubie", "Gemini Pro Advanced区别", "区别科普", "会员选择"],
+    ],
+  },
+  {
+    category: "Grok",
+    slugPrefix: "grok",
+    productName: "Grok",
+    subjects: [
+      { label: "Grok", slug: "grok", keyword: "Grok" },
+      { label: "Grok 会员", slug: "grok-huiyuan", keyword: "Grok会员" },
+      { label: "SuperGrok", slug: "supergrok", keyword: "SuperGrok" },
+      { label: "X Premium", slug: "x-premium", keyword: "X Premium" },
+      { label: "X 账号", slug: "x-zhanghao", keyword: "X账号" },
+    ],
+    strengths: ["X 生态", "实时内容理解", "热点信息", "xAI 模型体验", "社交内容辅助"],
+    accountFocus: ["X 账号状态", "Grok / SuperGrok 权益", "地区与 IP", "邮箱和昵称", "账号受限"],
+    special: [
+      ["Grok会员开通教程", "grok-huiyuan-kaitong", "Grok会员开通", "充值教程", "开通教程"],
+      ["Grok怎么充值", "grok-zenme-chongzhi", "Grok怎么充值", "充值教程", "强购买意图"],
+      ["Grok和SuperGrok有什么区别", "grok-supergrok-qubie", "Grok SuperGrok区别", "区别科普", "会员选择"],
+      ["Grok国内开通前需要准备什么", "grok-guonei-kaitong-zhunbei", "Grok国内开通", "下单检查", "开通前准备"],
+      ["Grok X账号状态怎么检查", "grok-x-zhanghao-zhuangtai", "Grok X账号", "账号风控", "账号状态"],
+      ["Grok支付失败常见原因", "grok-zhifu-shibai", "Grok支付失败", "支付失败", "失败排查"],
+    ],
+  },
 ];
 
-function makeSeeds(
-  category: ProductCategory,
-  items: Array<[string, string, string]>,
-): TopicSeed[] {
-  return items.map(([title, slug, keyword]) => ({
+const patterns: Pattern[] = [
+  { label: "怎么充值", slug: "zenme-chongzhi", keyword: "怎么充值", articleType: "充值教程", intent: "强购买意图" },
+  { label: "国内充值教程", slug: "guonei-chongzhi-jiaocheng", keyword: "国内充值教程", articleType: "充值教程", intent: "教程搜索" },
+  { label: "国内开通注意事项", slug: "guonei-kaitong-zhuyi", keyword: "国内开通", articleType: "下单检查", intent: "开通前判断" },
+  { label: "支付失败怎么办", slug: "zhifu-shibai-zenmeban", keyword: "支付失败", articleType: "支付失败", intent: "失败排查" },
+  { label: "虚拟卡失败怎么办", slug: "xunika-shibai", keyword: "虚拟卡失败", articleType: "支付失败", intent: "失败排查" },
+  { label: "银行卡扣款失败原因", slug: "yinhangka-koukuan-shibai", keyword: "银行卡扣款失败", articleType: "支付失败", intent: "失败排查" },
+  { label: "账号状态怎么检查", slug: "zhanghao-zhuangtai-jiancha", keyword: "账号状态", articleType: "账号风控", intent: "账号检查" },
+  { label: "账号受限还能充值吗", slug: "zhanghao-shouxian-chongzhi", keyword: "账号受限", articleType: "账号风控", intent: "账号检查" },
+  { label: "账号风控风险说明", slug: "zhanghao-fengkong-risk", keyword: "账号风控", articleType: "账号风控", intent: "风险判断" },
+  { label: "邮箱填错怎么办", slug: "youxiang-tiancuo", keyword: "邮箱填错", articleType: "下单检查", intent: "售后排查" },
+  { label: "充值后没生效怎么办", slug: "chongzhi-weishengxiao", keyword: "充值未生效", articleType: "支付失败", intent: "售后排查" },
+  { label: "需要提供密码吗", slug: "xuyao-mima-ma", keyword: "需要密码吗", articleType: "下单检查", intent: "安全疑问" },
+  { label: "自助下单流程", slug: "zizhu-xiadan-liucheng", keyword: "自助下单", articleType: "充值教程", intent: "流程说明" },
+  { label: "人工代充和自助充值怎么选", slug: "rengong-zizhu-duibi", keyword: "代充自助充值", articleType: "区别科普", intent: "方式比较" },
+  { label: "官方订阅和第三方自助充值区别", slug: "guanfang-disanfang-qubie", keyword: "官方订阅第三方区别", articleType: "区别科普", intent: "方式比较" },
+  { label: "下单前必读清单", slug: "xiadan-qian-qingdan", keyword: "下单清单", articleType: "下单检查", intent: "下单前确认" },
+  { label: "续费前需要注意什么", slug: "xufei-qian-zhuyi", keyword: "续费注意", articleType: "下单检查", intent: "续费判断" },
+  { label: "新号和老号都能充值吗", slug: "xinhao-laohao-chongzhi", keyword: "新号老号", articleType: "账号风控", intent: "账号检查" },
+  { label: "overdue欠款怎么处理", slug: "overdue-qianfei-chuli", keyword: "overdue欠款", articleType: "账号风控", intent: "账单问题" },
+  { label: "地区和IP环境影响说明", slug: "diqu-ip-huanjing", keyword: "IP环境", articleType: "账号风控", intent: "环境判断" },
+  { label: "开通后如何确认会员状态", slug: "kaitong-hou-queren-zhuangtai", keyword: "会员状态确认", articleType: "使用技巧", intent: "使用确认" },
+  { label: "适合哪些用户", slug: "shihe-naxie-yonghu", keyword: "适合谁", articleType: "区别科普", intent: "购买前判断" },
+  { label: "和其他AI会员怎么选", slug: "he-qita-ai-huiyuan-zenme-xuan", keyword: "AI会员怎么选", articleType: "区别科普", intent: "产品选择" },
+  { label: "常见售后问题整理", slug: "shouhou-wenti-zhengli", keyword: "售后问题", articleType: "使用技巧", intent: "售后排查" },
+  { label: "使用技巧和避坑建议", slug: "shiyong-jiqiao-bikeng", keyword: "使用技巧", articleType: "使用技巧", intent: "使用教程" },
+];
+
+function makeTopicsForProfile(profile: CategoryProfile, target = 100): TopicSeed[] {
+  const topics: TopicSeed[] = profile.special.map(([title, slug, keyword, articleType, scenario]) => ({
     title,
     slug,
-    category,
-    keywords: [keyword, `${category}充值`, `${category}开通`, "AI会员充值"],
-    searchIntent: getIntent(title),
-    articleType: getType(title),
+    category: profile.category,
+    keywords: [keyword, `${profile.productName}充值`, `${profile.productName}开通`, "AI会员充值"],
+    searchIntent: scenario,
+    articleType,
+    scenario,
   }));
+
+  for (const subject of profile.subjects) {
+    for (const pattern of patterns) {
+      topics.push({
+        title: `${subject.label} ${pattern.label}`,
+        slug: `${subject.slug}-${pattern.slug}`,
+        category: profile.category,
+        keywords: [
+          `${subject.keyword}${pattern.keyword}`,
+          `${profile.productName}充值`,
+          `${profile.productName}开通`,
+          "AI会员充值",
+        ],
+        searchIntent: pattern.intent,
+        articleType: pattern.articleType,
+        scenario: pattern.intent,
+      });
+    }
+  }
+
+  return uniqueTopics(topics).slice(0, target);
 }
 
-function getIntent(title: string) {
-  if (title.includes("失败") || title.includes("怎么办")) return "排查问题";
-  if (title.includes("区别") || title.includes("关系")) return "比较选择";
-  if (title.includes("检查") || title.includes("清单")) return "下单前确认";
-  if (title.includes("注意") || title.includes("风险")) return "风险判断";
-  return "开通教程";
-}
-
-function getType(title: string): ArticleType {
-  if (title.includes("失败")) return "支付失败";
-  if (title.includes("区别") || title.includes("关系")) return "区别科普";
-  if (title.includes("风控") || title.includes("风险")) return "账号风控";
-  if (title.includes("检查") || title.includes("清单") || title.includes("注意")) return "下单检查";
-  if (title.includes("使用")) return "使用教程";
-  return "充值教程";
+function uniqueTopics(topics: TopicSeed[]) {
+  const seen = new Set<string>();
+  return topics.filter((topic) => {
+    if (seen.has(topic.slug)) return false;
+    seen.add(topic.slug);
+    return true;
+  });
 }
 
 function scoreProduct(product: Product, seed: TopicSeed) {
@@ -213,29 +237,12 @@ function scoreProduct(product: Product, seed: TopicSeed) {
     if (text.includes(compactKeyword)) score += 3;
   }
 
-  const signals = [
-    "plus",
-    "pro",
-    "max",
-    "advanced",
-    "supergrok",
-    "codex",
-    "premium",
-    "组织",
-    "organization",
-    "成品号",
-    "普通账号",
-  ];
-
-  for (const signal of signals) {
+  for (const signal of ["plus", "pro", "max", "advanced", "supergrok", "premium", "组织", "organization"]) {
     if (title.includes(signal) && text.includes(signal)) score += 6;
   }
 
   if ((title.includes("plus") || title.includes("pro")) && /没有会员|普通账号/.test(text)) {
-    score -= 8;
-  }
-  if (title.includes("成品号") && /普通账号|成品号|独享账号/.test(text)) {
-    score += 8;
+    score -= 6;
   }
   if (title.includes("支付失败") && /充值|plus|pro|premium|会员/.test(text)) {
     score += 2;
@@ -251,15 +258,15 @@ function pickProduct(category: ProductCategory, index: number, seed: TopicSeed) 
   const matched = products.filter((product) => product.category === category);
   if (matched.length > 0) {
     return [...matched].sort((a, b) => scoreProduct(b, seed) - scoreProduct(a, seed))[
-      index % Math.min(3, matched.length)
+      index % Math.min(4, matched.length)
     ];
   }
-  const other = products.filter((product) => product.category === "Other");
-  return other[index % Math.max(1, other.length)] || fallbackProduct;
+  return products.find((product) => product.category === "Other") || fallbackProduct;
 }
 
 function buildTopics(): ArticleTopic[] {
-  return seeds.slice(0, 100).map((seed, index) => {
+  const seeds = profiles.flatMap((profile) => makeTopicsForProfile(profile, 100));
+  return seeds.map((seed, index) => {
     const product = pickProduct(seed.category, index, seed);
     return {
       ...seed,
@@ -273,47 +280,40 @@ function yamlArray(values: string[]) {
   return `[${values.map((value) => JSON.stringify(value)).join(", ")}]`;
 }
 
-function productPhrase(product: Product) {
-  if (product.id === fallbackProduct.id) {
-    return "自助下单总入口";
-  }
-  return `${product.platform} 相关商品页`;
+function getProfile(category: CoreCategory) {
+  const profile = profiles.find((item) => item.category === category);
+  if (!profile) throw new Error(`Unknown category: ${category}`);
+  return profile;
+}
+
+function getArticleAdvice(articleType: ArticleType, profile: CategoryProfile) {
+  const common = `陈鹏AI服务的处理原则是不拼低价，不靠夸张承诺吸引下单，而是把账号状态、商品规则和售后边界讲清楚。${profile.productName} 相关问题看似都是“充值”，实际经常牵扯到 ${profile.accountFocus.slice(0, 3).join("、")}。`;
+  const map: Record<ArticleType, string> = {
+    充值教程: `如果你的目标是开通或续费，先确认账号能否正常登录，再看当前会员状态和商品要求。${common}`,
+    支付失败: `遇到支付失败时，不要连续换卡硬试。先拆分判断：是支付方式问题、账单资料问题、账号状态问题，还是平台临时风控。${common}`,
+    区别科普: `做选择题时不要只看名称和价格。更重要的是额度、适用账号、使用场景、续费方式和售后边界。${common}`,
+    账号风控: `账号风控类问题不能靠一句“能不能充”判断。要看登录状态、历史订阅、地区环境、安全验证和平台提示。${common}`,
+    下单检查: `下单检查是减少售后问题的核心动作。账号状态越清楚，订单处理和沟通成本越低。${common}`,
+    使用技巧: `使用技巧类问题要先确认权益是否已经生效，再看入口、账号切换、浏览器环境和功能限制。${common}`,
+  };
+
+  return map[articleType];
 }
 
 function buildArticle(topic: ArticleTopic, product: Product) {
-  const platform = topic.category === "Other" ? "AI 工具" : topic.category;
-  const productText = productPhrase(product);
-  const typeAdvice = getTypeAdvice(topic.articleType, platform);
-  const checklist = [
-    `确认当前 ${platform} 账号能正常登录，并能看到基础设置或订阅页面`,
-    "确认账号是否存在欠款、取消中订阅、历史扣款失败或安全验证",
-    "确认商品说明适用的账号状态，不要把 Free、Pro、Max、成品号混在一起",
-    "确认下单邮箱、登录邮箱、订单邮箱是否一致，避免售后无法核对",
-    "确认自己能接受平台风控和规则变化带来的不确定性",
-    "确认已经阅读商品页的处理时效、售后边界和补充材料要求",
-  ];
-  const scenes = [
-    `用户搜索「${topic.keywords[0]}」时，通常不是只想知道价格，而是想判断自己的账号能不能处理、哪一步容易失败、下单后要准备什么。`,
-    `${platform} 的会员规则经常和账号地区、支付方式、历史订阅、登录环境有关。单看别人成功案例，很容易忽略自己账号的特殊状态。`,
-    `如果你已经连续尝试多次支付或多次切换环境，建议先停下来核对原因。反复尝试不一定提高成功率，反而可能让账号行为更敏感。`,
-  ];
-  const risk = [
-    "充值和开通结果会受到平台规则、账号状态、地区环境、支付通道和安全验证影响。",
-    "教程能帮助你减少明显误判，但不能替代平台自己的审核，也不能承诺后续完全不遇到验证或限制。",
-    "虚拟产品售后通常围绕商品说明执行。下单前读清适用范围，比下单后再解释更省时间。",
-  ];
-  const faq = [
-    ["这类商品适合所有账号吗？", "不一定。不同商品支持的账号状态不同，尤其是已有会员、欠款、受限或多账号登录场景，需要先看商品说明。"],
-    ["下单前最重要的检查是什么？", "先确认账号能正常登录、没有明显欠款或安全限制，再确认商品页要求的邮箱、ID、截图等信息。"],
-    ["如果找不到对应商品怎么办？", "可以先进入自助下单总入口查看分类，或联系页面客服说明目标产品和账号状态。"],
-  ];
+  const profile = getProfile(topic.category);
+  const strengths = profile.strengths.join("、");
+  const accountFocus = profile.accountFocus.join("、");
+  const advice = getArticleAdvice(topic.articleType, profile);
+  const productHint =
+    product.id === fallbackProduct.id ? "自助下单总入口" : `${product.category}相关商品入口`;
 
   return `---
 title: "${topic.title}"
-description: "${topic.title}，从账号状态、支付失败、平台风控、下单前检查和自助下单说明几个角度，帮助用户先判断再购买。"
+description: "${topic.title}，围绕账号状态、支付失败、下单前检查、风险说明和自助下单流程，帮助用户快速判断怎么处理。"
 category: "${topic.category}"
 slug: "${topic.slug}"
-date: "${today}"
+date: "${publishDate}"
 keywords: ${yamlArray(topic.keywords)}
 productId: "${topic.productId}"
 productUrl: "${topic.ctaProductUrl}"
@@ -321,66 +321,73 @@ productUrl: "${topic.ctaProductUrl}"
 
 ## 本文适合谁
 
-这篇文章适合正在搜索「${topic.keywords[0]}」的用户。你可能已经有账号，也可能刚准备第一次开通会员；你关心的不只是能不能买，更关心账号状态是否适合、支付失败是否会反复出现、售后边界是否清楚。我的建议是先把规则看明白，再决定是否下单。
+这篇文章适合正在搜索「${topic.keywords[0]}」的用户。你可能已经试过官方支付，也可能只是准备第一次开通会员；真正需要解决的不是一句“能不能充”，而是账号状态是否适合、商品规则是否匹配、失败后应该先排查哪里。
 
-如果你准备通过${productText}处理，也建议先读完本文。商品页负责写具体规则，本文负责把下单前的判断逻辑讲清楚：哪些信息要核对，哪些场景要先暂停，哪些风险不能被任何服务完全消除。
+如果你正在对比 ${profile.productName} 相关服务，也可以把本文当作下单前判断清单。${profile.productName} 常见使用场景包括 ${strengths}，但充值或开通之前，更应该先看 ${accountFocus}。
 
 ## 常见问题场景
 
-${scenes.join("\n\n")}
+第一类场景是用户只看到“充值”两个字，就直接找入口付款，结果忽略了当前账号是否已有会员、是否存在欠款、邮箱是否填错、登录环境是否稳定。
 
-还有一种常见误区是把不同产品的经验混用。ChatGPT、Claude、Gemini、Grok、YouTube、Spotify、X Premium 等服务的账号体系并不相同。你要看的不是“别人是否成功”，而是“我的账号是否符合当前商品说明”。
+第二类场景是支付失败后连续尝试。很多平台会把支付方式、地区、账号历史和设备环境一起判断，连续尝试未必能解决问题，还可能让账号进入更敏感的状态。
+
+第三类场景是把别人的成功经验直接套到自己身上。ChatGPT、Claude、Gemini、Grok 的账号体系不同，同一个用户在 A 平台能处理，不代表 B 平台也符合规则。
 
 ## 下单前检查清单
 
-${checklist.map((item) => `- ${item}`).join("\n")}
+- 当前账号是否能正常登录，并能看到订阅或设置入口
+- 当前账号是否为商品说明支持的状态，例如 Free、Pro、Max 或指定会员状态
+- 是否存在 overdue 欠款、历史扣款失败、取消中订阅或安全验证
+- 下单邮箱、登录邮箱、订单邮箱是否一致
+- 是否已经阅读商品页说明、处理时效和售后边界
+- 是否能接受平台规则变化、地区限制和账号风控带来的不确定性
 
-检查清单不是形式主义。很多售后问题最后都回到这些细节：邮箱填错、已有订阅未取消、overdue 欠款没处理、账号本身需要验证、商品只支持指定状态。
+这些检查不是为了拖慢下单，而是为了减少无效订单。很多售后沟通最后都回到同几个问题：邮箱填错、账号状态不符合、已有订阅没处理、平台要求额外验证。
 
-## 方法判断与操作建议
+## 解决思路
 
-${typeAdvice}
+${advice}
 
-如果你有稳定的官方支付条件，可以优先考虑官方订阅；如果你熟悉虚拟卡、账单地址和长期续费成本，也可以自己研究。第三方自助充值更适合已经看过说明、账号状态清楚、能接受售后边界，并希望节省操作成本的人。
+如果你有稳定的官方支付条件，可以优先使用官方订阅；如果你熟悉虚拟卡、账单地址和长期续费成本，也可以自己研究。第三方自助充值更适合已经读完商品说明、账号状态清楚、希望节省操作时间的人。
 
 ## 风险说明
 
-${risk.join("\n\n")}
+教程能帮助你减少明显误判，但不能替代平台自己的审核。会员开通结果会受到账号状态、地区环境、支付通道、平台策略和后续登录行为影响。
 
-我不建议相信脱离平台规则的保证。更专业的判断是：先降低明显风险，比如填对邮箱、处理欠款、稳定登录环境、确认商品适用范围；再接受无法完全控制的部分，比如平台临时风控、地区策略变化和后续验证。
+专业的处理方式不是承诺没有风险，而是把风险边界提前讲清楚：哪些账号适合，哪些账号要先处理欠款或验证，哪些情况建议先联系客服确认。
 
 ## 自助下单引导
 
-如果你已经看完教程，并确认账号状态、商品规则和风险说明，可以前往陈鹏AI服务自助下单。不同产品规则不同，请先阅读商品页说明，再决定是否购买。
+如果你已经看完本文，并确认账号状态、商品规则和风险说明，可以前往陈鹏AI服务自助下单。本篇匹配的是${productHint}，不同产品规则不同，请先阅读商品页说明，再决定是否购买。
 
 [前往自助下单](${topic.ctaProductUrl})
 
-下单后如果遇到问题，建议一次性准备下单邮箱、订单号、支付截图、账号页面提示截图。客服需要看到具体提示，才能判断是账号状态、商品规则、平台延迟还是填写信息的问题。
+下单后如需售后沟通，请一次性准备下单邮箱、订单号、支付截图和账号页面提示截图。信息越完整，排查越快。
 
 ## FAQ
 
-${faq
-  .map(([question, answer]) => `### ${question}\n\n${answer}`)
-  .join("\n\n")}
+### ${topic.title}可以直接下单吗？
+
+不建议只看标题直接下单。先确认账号状态、商品适用范围、邮箱填写和售后规则，无法判断时先联系客服。
+
+### 支付失败是不是换一张卡就行？
+
+不一定。支付失败可能来自卡片、账单资料、账号状态、地区环境或平台风控，需要先判断原因。
+
+### 陈鹏AI服务适合什么用户？
+
+适合不想反复研究复杂支付流程，希望先看清规则、确认账号状态，再按商品说明自助下单的用户。
+
+### 如果充值后遇到验证怎么办？
+
+先保留页面提示截图，再根据商品页售后说明联系处理。平台验证属于动态规则，不能只靠充值动作完全避免。
 `;
-}
-
-function getTypeAdvice(articleType: ArticleType, platform: string) {
-  const advice: Record<ArticleType, string> = {
-    充值教程: `处理 ${platform} 会员开通时，先确认入口、邮箱、订阅状态和商品规则，再决定用官方支付、虚拟卡还是自助充值。不要把下单当成第一步，判断账号状态才是第一步。`,
-    支付失败: `遇到支付失败时，先不要连续重复付款。更稳的做法是把卡片、账单地址、账号地区、欠款状态和登录环境逐项排查，再决定是否换方式处理。`,
-    区别科普: `做区别判断时，不要只看名称和价格。要看额度、入口、账号要求、续费方式、售后边界，以及它是否真的匹配你的日常使用场景。`,
-    账号风控: `涉及账号风控时，重点不是寻找所谓无风险办法，而是降低明显风险：稳定登录环境、处理安全验证、不要频繁切换设备，并确认商品适用范围。`,
-    下单检查: `下单检查的核心是把“能不能处理”放在“要不要付款”之前。账号状态、邮箱、欠款、当前会员等级和商品要求都要先核对。`,
-    使用教程: `使用教程的重点是把开通后的入口、账号切换、权益识别和常见异常讲清楚。不要只看是否开通，还要确认自己能稳定找到并使用对应功能。`,
-  };
-
-  return advice[articleType];
 }
 
 async function main() {
   const topics = buildTopics();
   await fs.mkdir(postsDir, { recursive: true });
+
   const existing = await fs.readdir(postsDir);
   await Promise.all(
     existing
@@ -390,7 +397,7 @@ async function main() {
 
   await fs.writeFile(
     topicsPath,
-    `export type ArticleTopic = {\n  title: string;\n  slug: string;\n  category: string;\n  productId: string;\n  keywords: string[];\n  searchIntent: string;\n  articleType: string;\n  ctaProductUrl: string;\n};\n\nexport const articleTopics: ArticleTopic[] = ${JSON.stringify(
+    `export type ArticleTopic = {\n  title: string;\n  slug: string;\n  category: string;\n  productId: string;\n  keywords: string[];\n  searchIntent: string;\n  articleType: string;\n  scenario: string;\n  ctaProductUrl: string;\n};\n\nexport const articleTopics: ArticleTopic[] = ${JSON.stringify(
       topics,
       null,
       2,

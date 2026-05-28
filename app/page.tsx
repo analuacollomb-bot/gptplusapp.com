@@ -15,6 +15,7 @@ import { ComparisonTable } from "@/components/comparison-table";
 import { CtaBand } from "@/components/cta-band";
 import { SectionHeading } from "@/components/section-heading";
 import { siteContent } from "@/content/site";
+import { seoKeywordPages } from "@/content/seo";
 import { getAllPosts } from "@/lib/posts";
 import {
   categories,
@@ -148,6 +149,40 @@ export default function Home() {
               </p>
             </div>
           ))}
+        </div>
+      </section>
+
+      <section className="bg-[#fff5dc] px-4 py-16 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <SectionHeading
+              eyebrow="Search Intent"
+              title="高频疑难入口"
+              description="围绕用户真的会搜索的问题建立专题：怎么充值、支付失败、账号风控、会员区别和下单前检查。"
+            />
+            <ButtonLink href="/topics" icon={ArrowRight} variant="secondary">
+              全部专题
+            </ButtonLink>
+          </div>
+          <div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {seoKeywordPages.slice(0, 8).map((page) => (
+              <Link
+                className="gold-card rounded-xl p-4 transition hover:-translate-y-0.5 hover:border-[#c99f55]"
+                href={`/topics/${page.slug}`}
+                key={page.slug}
+              >
+                <span className="text-xs font-black uppercase tracking-[0.16em] text-[#9a6a2f]">
+                  {page.category}
+                </span>
+                <h2 className="mt-2 text-base font-black text-[#17110c]">
+                  {page.primaryKeyword}
+                </h2>
+                <p className="mt-2 line-clamp-2 text-sm leading-6 text-[#6e6257]">
+                  {page.searchIntent}
+                </p>
+              </Link>
+            ))}
+          </div>
         </div>
       </section>
 

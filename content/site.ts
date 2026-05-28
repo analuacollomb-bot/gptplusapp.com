@@ -27,6 +27,7 @@ export const siteContent = {
     { label: "Claude", href: "/claude" },
     { label: "Gemini", href: "/gemini" },
     { label: "Grok", href: "/grok" },
+    { label: "专题", href: "/topics" },
     { label: "商品", href: "/products" },
     { label: "教程", href: "/blog" },
     { label: "评价", href: "/reviews" },

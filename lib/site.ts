@@ -349,6 +349,7 @@ export const footerColumns = [
   {
     title: "知识库",
     links: [
+      { label: "关键词专题", href: "/topics" },
       { label: "全部教程", href: "/blog" },
       { label: "商品入口", href: "/products" },
       { label: "用户反馈", href: "/reviews" },

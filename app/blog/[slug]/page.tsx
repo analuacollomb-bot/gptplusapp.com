@@ -119,9 +119,58 @@ export default async function PostPage({ params }: PostPageProps) {
     (item) => item.id !== product?.id,
   );
   const pageFaqs = fullFaqs.slice(0, 5);
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: post.title,
+    description: post.description,
+    datePublished: post.date,
+    dateModified: post.date,
+    author: {
+      "@type": "Organization",
+      name: siteConfig.chineseBrand,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: siteConfig.name,
+      logo: {
+        "@type": "ImageObject",
+        url: `${siteConfig.url}${siteConfig.avatar}`,
+      },
+    },
+    mainEntityOfPage: `${siteConfig.url}/blog/${post.slug}`,
+    keywords: post.keywords.join(","),
+  };
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "首页", item: siteConfig.url },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "教程",
+        item: `${siteConfig.url}/blog`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: post.title,
+        item: `${siteConfig.url}/blog/${post.slug}`,
+      },
+    ],
+  };
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
       <section className="compass-field relative overflow-hidden px-4 py-14 text-[#fff7e6] sm:px-6 lg:px-8">
         <div className="compass-mark" />
         <div className="relative mx-auto max-w-5xl">
