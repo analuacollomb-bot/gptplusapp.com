@@ -114,7 +114,7 @@ export default async function PostPage({ params }: PostPageProps) {
   const category = getCategoryByName(post.category);
   const relatedPosts = getRelatedPosts(post, 3);
   const product = getProductById(post.productId);
-  const ctaProductUrl = product?.orderUrl ?? post.productUrl;
+  const ctaProductUrl = post.productUrl || product?.orderUrl || siteConfig.productUrl;
   const relatedProducts = getRelatedProducts(post.category, 3).filter(
     (item) => item.id !== product?.id,
   );
@@ -303,7 +303,7 @@ export default async function PostPage({ params }: PostPageProps) {
                 </p>
                 <ButtonLink
                   external
-                  href={ctaProductUrl}
+                  href={product.orderUrl}
                   icon={ArrowUpRight}
                   variant="secondary"
                   className="mt-4 w-full"

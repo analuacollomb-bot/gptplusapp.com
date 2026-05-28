@@ -74,6 +74,11 @@ const categorySignals: Array<{
     keywords: ["Grok会员开通", "SuperGrok充值", "X账号"],
   },
   {
+    category: "Other",
+    terms: ["netflix", "奈飞", "网飞"],
+    keywords: ["Netflix会员", "奈飞账号", "流媒体会员"],
+  },
+  {
     category: "YouTube",
     terms: ["youtube", "油管"],
     keywords: ["YouTube Premium", "YouTube会员"],
@@ -172,6 +177,10 @@ function extractMessageText(block: string) {
 }
 
 function parseTelegramHtml(html: string, channel: string) {
+  if (html.includes("page_body chat_page") && html.includes('class="message')) {
+    return parseTelegramDesktopHtml(html, channel);
+  }
+
   const blocks = Array.from(
     html.matchAll(
       /<div class="tgme_widget_message_wrap js-widget_message_wrap">([\s\S]*?)(?=<div class="tgme_widget_message_wrap js-widget_message_wrap">|<div class="tgme_channel_history|<\/main>|$)/g,
@@ -203,6 +212,64 @@ function parseTelegramHtml(html: string, channel: string) {
       text,
       links,
       orderUrl,
+    });
+  }
+
+  return posts;
+}
+
+function parseDesktopDate(value?: string) {
+  if (!value) {
+    return new Date().toISOString().slice(0, 10);
+  }
+
+  const match = value.match(/(\d{2})\.(\d{2})\.(\d{4})/);
+  if (!match) {
+    return new Date().toISOString().slice(0, 10);
+  }
+
+  const [, day, month, year] = match;
+  return `${year}-${month}-${day}`;
+}
+
+function parseTelegramDesktopHtml(html: string, channel: string) {
+  const blocks = Array.from(
+    html.matchAll(
+      /<div class="message default clearfix(?: joined)?" id="message([^"]+)">([\s\S]*?)(?=<div class="message (?:service|default)|<\/div>\s*<\/div>\s*<\/body>|$)/g,
+    ),
+  );
+
+  const posts: TelegramPost[] = [];
+
+  for (const match of blocks) {
+    const id = match[1].replace(/\D/g, "");
+    const block = match[2];
+    const dateMatch = block.match(/<div class="pull_right date details" title="([^"]+)"/);
+    const textMatch = block.match(/<div class="text">([\s\S]*?)<\/div>/);
+
+    if (!id || !textMatch) {
+      continue;
+    }
+
+    const text = normalizeText(stripHtml(textMatch[1]));
+    if (text.length < 20) {
+      continue;
+    }
+
+    const links = extractLinks(textMatch[1]);
+    const textLinks = Array.from(text.matchAll(/https?:\/\/\S+/g)).map((item) =>
+      item[0].replace(/[),.，。]+$/, ""),
+    );
+    const allLinks = Array.from(new Set([...links, ...textLinks]));
+
+    posts.push({
+      id,
+      channel,
+      sourceUrl: `https://t.me/${channel}/${id}`,
+      date: parseDesktopDate(dateMatch?.[1]),
+      text,
+      links: allLinks,
+      orderUrl: allLinks.find((link) => link.includes("gpt3plus.com")) ?? defaultOrderUrl,
     });
   }
 
@@ -443,7 +510,7 @@ function scoreProduct(product: Product, post: TelegramPost, category: ProductCat
 function matchProduct(post: TelegramPost, category: ProductCategory) {
   if (post.orderUrl !== defaultOrderUrl) {
     const exact = products.find((product) => product.orderUrl === post.orderUrl);
-    if (exact) {
+    if (exact && (exact.category === category || category === "Other" || category === "陈鹏AI服务")) {
       return exact;
     }
   }
@@ -486,7 +553,10 @@ function makeAnalysis(category: ProductCategory, title: string) {
 function makeArticle(post: TelegramPost) {
   const category = detectCategory(post.text);
   const product = matchProduct(post, category);
-  const productUrl = product?.orderUrl ?? post.orderUrl ?? defaultOrderUrl;
+  const productUrl =
+    post.orderUrl && post.orderUrl !== defaultOrderUrl
+      ? post.orderUrl
+      : product?.orderUrl ?? defaultOrderUrl;
   const productId = product?.id ?? fallbackProductId;
   const title = makeTitle(post, category);
   const description = makeDescription(post.text, category);
