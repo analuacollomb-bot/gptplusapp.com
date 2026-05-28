@@ -5,17 +5,20 @@ export const siteContent = {
   baseUrl: "https://gptplusapp.com",
   avatar: "/brand/avatar.png",
   telegramUrl: "https://t.me/netfix666",
-  slogan: "陈鹏AI服务 / 账号开通避坑指南 / 长期知识库",
+  serviceIntro:
+    "专注AI会员服务｜ChatGPT/Grok/Gemini/Claude稳定代充「正规渠道｜长期稳定｜支持续费」",
+  slogan:
+    "专注AI会员服务｜ChatGPT/Grok/Gemini/Claude稳定代充「正规渠道｜长期稳定｜支持续费」",
   primaryCtaUrl: "https://gpt3plus.com/",
   heroTitle: "AI会员充值与使用教程知识库",
   heroSubtitle:
-    "由陈鹏AI服务长期维护，系统整理 ChatGPT、Claude、Gemini、Grok 等主流 AI 工具的会员开通方式、支付失败原因、账号状态检查、平台风控说明与自助下单指南。先看清规则，再决定是否下单，少走弯路。",
-  heroTags: ["陈鹏AI服务", "风险透明", "账号检查", "自助下单", "长期服务"],
+    "陈鹏AI服务专注AI会员服务，提供 ChatGPT、Grok、Gemini、Claude 等主流 AI 工具稳定代充说明、开通教程与续费指引。本站长期整理会员开通方式、支付失败原因、账号状态检查、平台风控说明与自助下单指南，先看清规则，再决定是否下单，少走弯路。",
+  heroTags: ["正规渠道", "长期稳定", "支持续费", "账号检查", "自助下单"],
   primaryCtaText: "前往自助下单",
   secondaryCtaText: "查看充值教程",
   secondaryCtaUrl: "/blog",
   footerText:
-    "GPT Plus App 是面向中文用户的 AI 会员充值教程与自助下单引导站。我们更像一份账号开通避坑指南：先看清规则，再决定是否下单。",
+    "GPT Plus App 是面向中文用户的 AI 会员充值教程与自助下单引导站。陈鹏AI服务专注AI会员服务，覆盖 ChatGPT、Grok、Gemini、Claude 稳定代充、正规渠道说明、长期稳定使用与续费提醒。我们更像一份账号开通避坑指南：先看清规则，再决定是否下单。",
   contactText:
     "下单前请先阅读商品说明，确认适用账号、处理规则、售后边界和风险提示。售后问题请准备完整订单信息，再通过自助下单站的客服入口沟通。",
   riskNotice:

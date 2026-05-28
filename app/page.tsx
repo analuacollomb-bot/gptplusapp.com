@@ -38,9 +38,9 @@ export default function Home() {
         <div className="compass-mark" />
         <div className="relative mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1.02fr_0.98fr] lg:items-center">
           <div>
-            <div className="inline-flex items-center gap-2 rounded-xl border border-[#f0d89a]/30 bg-[#fffaf0]/10 px-3 py-2 text-sm font-bold text-[#f0d89a] backdrop-blur">
-              <Compass aria-hidden="true" className="size-4" />
-              陈鹏AI服务开通避坑指南
+            <div className="inline-flex max-w-full items-start gap-2 rounded-xl border border-[#f0d89a]/30 bg-[#fffaf0]/10 px-3 py-2 text-sm font-bold leading-6 text-[#f0d89a] backdrop-blur">
+              <Compass aria-hidden="true" className="mt-1 size-4 shrink-0" />
+              <span>{siteContent.serviceIntro}</span>
             </div>
             <h1 className="mt-7 text-4xl font-black tracking-tight sm:text-6xl">
               {siteContent.heroTitle}
@@ -93,6 +93,9 @@ export default function Home() {
                   {siteConfig.chineseBrand}
                 </p>
                 <p className="mt-1 text-lg font-black">先判断，再下单</p>
+                <p className="mt-2 max-w-md text-sm leading-6 text-[#ead9b8]">
+                  {siteConfig.serviceIntro}
+                </p>
               </div>
             </div>
 

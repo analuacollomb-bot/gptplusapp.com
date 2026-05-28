@@ -7,7 +7,7 @@ import { categories, siteConfig } from "@/lib/site";
 export const metadata: Metadata = {
   title: "关于我们",
   description:
-    "GPT Plus App 是由陈鹏AI服务长期维护的 AI 会员充值教程与使用说明知识库，帮助用户理解主流 AI 工具的开通方式、支付问题和风险说明。",
+    "GPT Plus App 由陈鹏AI服务长期维护，专注AI会员服务，覆盖 ChatGPT、Grok、Gemini、Claude 稳定代充、开通教程、续费说明和风险提示。",
   alternates: {
     canonical: "/about",
   },
@@ -27,7 +27,7 @@ export default function AboutPage() {
               关于 GPT Plus App
             </h1>
             <p className="mt-5 max-w-3xl text-base leading-8 text-[#ead9b8]">
-              GPT Plus App 是 AI 会员充值教程与使用说明知识库，由{siteConfig.chineseBrand}长期维护。我们把复杂的开通流程、支付问题和账号规则讲清楚，让用户在下单前有更稳定的判断。
+              GPT Plus App 是 AI 会员充值教程与使用说明知识库，由{siteConfig.chineseBrand}长期维护。{siteConfig.serviceIntro}。我们把复杂的开通流程、支付问题和账号规则讲清楚，让用户在下单前有更稳定的判断。
             </p>
           </div>
           <div className="gold-card-dark rounded-3xl p-6">
@@ -49,7 +49,7 @@ export default function AboutPage() {
                 </p>
                 <p className="mt-2 text-2xl font-black">陈鹏AI服务</p>
                 <p className="mt-2 text-sm leading-6 text-[#ead9b8]">
-                  账号开通避坑指南 / 长期知识库 / 自助下单前判断
+                  {siteConfig.serviceIntro}
                 </p>
               </div>
             </div>
@@ -64,7 +64,7 @@ export default function AboutPage() {
               我们长期整理什么内容？
             </h2>
             <p className="mt-5 text-base leading-8 text-[#6e6257]">
-              主要帮助用户理解 ChatGPT、Claude、Gemini、Grok 等工具的开通方式、支付失败原因、账号规则、风控提醒和自助下单前检查事项。本站不是普通发卡模板站，而是面向搜索流量和长期服务的中文教程知识库。
+              主要帮助用户理解 ChatGPT、Grok、Gemini、Claude 等工具的稳定代充、正规渠道说明、续费注意事项、开通方式、支付失败原因、账号规则、风控提醒和自助下单前检查事项。本站不是普通发卡模板站，而是面向搜索流量和长期服务的中文教程知识库。
             </p>
             <div className="mt-8 grid gap-3 sm:grid-cols-2">
               {categories.map((category) => (

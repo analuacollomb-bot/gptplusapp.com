@@ -30,6 +30,8 @@ export const siteConfig = {
   productUrl: siteContent.primaryCtaUrl,
   telegramUrl: siteContent.telegramUrl,
   avatar: siteContent.avatar,
+  serviceIntro: siteContent.serviceIntro,
+  slogan: siteContent.slogan,
   description: siteContent.heroSubtitle,
 };
 
