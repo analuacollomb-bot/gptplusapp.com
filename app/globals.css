@@ -90,6 +90,51 @@ a {
   background: linear-gradient(90deg, transparent, rgba(215, 173, 95, 0.65), transparent);
 }
 
+.hero-gold-text {
+  background: linear-gradient(135deg, #fff5dc 0%, #f0d89a 28%, #d7ad5f 56%, #c75a25 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 18px 58px rgba(199, 90, 37, 0.18);
+}
+
+.motion-rise {
+  animation: motion-rise 0.72s cubic-bezier(0.2, 0.72, 0.22, 1) both;
+}
+
+.motion-delay-1 {
+  animation-delay: 0.12s;
+}
+
+.service-float-button {
+  animation: service-pulse 2.7s ease-in-out infinite;
+}
+
+@keyframes motion-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes service-pulse {
+  0%,
+  100% {
+    box-shadow: 0 18px 48px rgba(154, 106, 47, 0.32);
+    transform: translateY(0);
+  }
+
+  50% {
+    box-shadow: 0 26px 70px rgba(215, 173, 95, 0.46);
+    transform: translateY(-3px);
+  }
+}
+
 .article-prose {
   color: #4b4036;
   font-size: 1rem;

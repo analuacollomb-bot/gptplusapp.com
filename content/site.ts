@@ -5,6 +5,9 @@ export const siteContent = {
   baseUrl: "https://gptplusapp.com",
   avatar: "/brand/avatar.png",
   telegramUrl: "https://t.me/netfix666",
+  wechatId: "Dcpluspro",
+  serviceHours: "早10点 - 晚24点",
+  orderQueryUrl: "https://gpt3plus.com/",
   serviceIntro:
     "专注AI会员服务｜ChatGPT/Grok/Gemini/Claude稳定代充「正规渠道｜长期稳定｜支持续费」",
   slogan:
