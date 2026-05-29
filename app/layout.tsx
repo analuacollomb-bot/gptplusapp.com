@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import { ConversionWidgets } from "@/components/conversion-widgets";
+import { LiveChatProvider } from "@/components/live-chat-provider";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { siteConfig } from "@/lib/site";
@@ -61,6 +62,7 @@ export default function RootLayout({
         <SiteHeader />
         <main className="min-h-screen">{children}</main>
         <SiteFooter />
+        <LiveChatProvider />
         <ConversionWidgets />
       </body>
     </html>

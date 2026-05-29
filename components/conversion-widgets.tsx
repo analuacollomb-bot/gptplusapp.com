@@ -46,6 +46,15 @@ export function ConversionWidgets() {
     }
   }
 
+  function openServicePanel() {
+    if (typeof window.Tawk_API?.maximize === "function") {
+      window.Tawk_API.maximize();
+      return;
+    }
+
+    setShowService((value) => !value);
+  }
+
   return (
     <>
       {showFavorite ? (
@@ -135,9 +144,13 @@ export function ConversionWidgets() {
             </div>
 
             <div className="mt-5 rounded-2xl border border-[#ead9b8] bg-[#fff5dc] p-4">
-              <p className="text-sm font-black text-[#17110c]">在线客服</p>
+              <p className="text-sm font-black text-[#17110c]">客服入口</p>
               <p className="mt-2 text-sm leading-7 text-[#6e6257]">
-                微信客服：{siteContent.wechatId}
+                在线客服繁忙时，可以先添加陈鹏个人微信。
+                <br />
+                微信号：{siteContent.wechatId}
+                <br />
+                商务合作、售前售后咨询，添加请备注来意。
                 <br />
                 服务时间：{siteContent.serviceHours}
               </p>
@@ -184,7 +197,7 @@ export function ConversionWidgets() {
 
         <button
           className="service-float-button inline-flex size-16 items-center justify-center rounded-full border border-[#d7ad5f]/70 bg-[linear-gradient(135deg,#1a120c,#6b451a_52%,#d7ad5f)] text-[#fff7e6] shadow-2xl shadow-[#9a6a2f]/35 transition hover:-translate-y-0.5 hover:brightness-110"
-          onClick={() => setShowService((value) => !value)}
+          onClick={openServicePanel}
           type="button"
         >
           <span className="sr-only">打开在线客服</span>

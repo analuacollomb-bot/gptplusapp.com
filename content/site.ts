@@ -5,7 +5,7 @@ export const siteContent = {
   baseUrl: "https://gptplusapp.com",
   avatar: "/brand/avatar.png",
   telegramUrl: "https://t.me/netfix666",
-  wechatId: "Dcpluspro",
+  wechatId: "dcpluspro",
   serviceHours: "早10点 - 晚24点",
   orderQueryUrl: "https://gpt3plus.com/",
   serviceIntro:

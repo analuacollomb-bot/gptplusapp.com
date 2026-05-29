@@ -69,13 +69,25 @@ export default function ContactPage() {
               </span>
               <div>
                 <p className="text-sm font-black uppercase tracking-[0.16em] text-[#f0d89a]">
-                  客服沟通前
+                  在线客服
                 </p>
-                <p className="mt-2 text-2xl font-black">先准备证据，再排查</p>
+                <p className="mt-2 text-2xl font-black">网页聊天接入中</p>
                 <p className="mt-2 text-sm leading-6 text-[#ead9b8]">
-                  邮箱、订单号、支付截图、问题截图越完整，判断越快。
+                  接入后用户可直接在网页咨询，员工用客服后台或手机 App 接待。
                 </p>
               </div>
+            </div>
+            <div className="mt-6 rounded-2xl border border-[#f0d89a]/20 bg-[#fffaf0]/8 p-4">
+              <p className="text-sm font-black text-[#f0d89a]">
+                备用联系方式
+              </p>
+              <p className="mt-2 text-sm leading-7 text-[#ead9b8]">
+                陈鹏个人微信号：{siteContent.wechatId}
+                <br />
+                商务合作、售前咨询、售后问题，添加时请备注来意。
+                <br />
+                服务时间：{siteContent.serviceHours}
+              </p>
             </div>
           </div>
         </div>
@@ -112,9 +124,9 @@ export default function ContactPage() {
         <div className="mx-auto max-w-5xl rounded-2xl border border-[#d8c39b] bg-[#fffaf0] p-6 shadow-sm">
           <h2 className="text-xl font-black text-[#17110c]">客服入口在哪里？</h2>
           <p className="mt-3 text-sm leading-8 text-[#6e6257]">
-            请进入成交主站/发卡网 {siteConfig.productUrl}，在商品页、订单页或页面客服入口联系。本站不展示额外私人联系方式，避免用户进入非官方沟通渠道。
+            接入在线客服系统后，用户点击右下角客服按钮即可直接发消息。员工可以使用客服后台或手机 App 登录接待。当前备用方式为添加陈鹏个人微信号 {siteContent.wechatId}，请备注来意。下单和订单处理仍统一跳转到成交主站/发卡网 {siteConfig.productUrl}。
           </p>
-          <div className="mt-6">
+          <div className="mt-6 flex flex-col gap-3 sm:flex-row">
             <ButtonLink
               external
               href={siteConfig.productUrl}
@@ -122,6 +134,9 @@ export default function ContactPage() {
               variant="primary"
             >
               打开自助下单站
+            </ButtonLink>
+            <ButtonLink href="/contact" icon={MessageCircle} variant="secondary">
+              查看客服说明
             </ButtonLink>
           </div>
         </div>

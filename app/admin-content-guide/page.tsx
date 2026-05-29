@@ -68,6 +68,13 @@ const guideCards = [
       "把陈鹏AI服务公开 Telegram 频道内容整理成 /telegram 专栏文章。脚本只读取公开预览页，也支持导入本地 HTML 备份。",
   },
   {
+    title: "在线客服系统",
+    icon: MessageCircle,
+    file: "NEXT_PUBLIC_TAWK_PROPERTY_ID / NEXT_PUBLIC_TAWK_WIDGET_ID",
+    description:
+      "接入 Tawk.to 后，访客点击右下角客服按钮即可网页聊天，员工用电脑后台或手机 App 登录接待。备用微信号在 content/site.ts 维护。",
+  },
+  {
     title: "站点地图与收录",
     icon: Globe2,
     file: "app/sitemap.ts / app/robots.ts",
@@ -87,6 +94,7 @@ const commands = [
   ["本地运行", "npm run dev"],
   ["抓取公开商品", "npm run scrape:products"],
   ["导入 TG 公开频道", "npm run import:telegram"],
+  ["配置在线客服", "Vercel 环境变量：NEXT_PUBLIC_TAWK_PROPERTY_ID / NEXT_PUBLIC_TAWK_WIDGET_ID"],
   ["生成文章", "npm run generate:articles"],
   ["生产构建", "npm run build"],
   ["查看 sitemap", "http://localhost:3000/sitemap.xml"],

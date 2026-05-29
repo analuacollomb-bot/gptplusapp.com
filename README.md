@@ -231,6 +231,44 @@ npm run import:telegram -- --source="/Users/cp/Downloads/Telegram Desktop" --lim
 
 这是静态说明页，不是后台，不支持线上保存，仅用于提醒站长如何维护首页文案、FAQ、商品、文章、爬虫和部署流程。
 
+## 在线客服系统
+
+网站已预留 Tawk.to 在线客服接入。接入后，用户点击网页右下角客服按钮即可直接聊天，员工可以用 Tawk.to 电脑后台或手机 App 登录接待、回复和接收通知。
+
+Vercel 环境变量：
+
+```text
+NEXT_PUBLIC_TAWK_PROPERTY_ID=
+NEXT_PUBLIC_TAWK_WIDGET_ID=
+```
+
+获取方式：
+
+1. 注册并登录 `https://www.tawk.to/`。
+2. 新建 Property，网站地址填 `https://www.gptplusapp.com/`。
+3. 在 Tawk.to 后台找到 Widget Code，通常格式类似：
+
+```html
+https://embed.tawk.to/PROPERTY_ID/WIDGET_ID
+```
+
+4. 把 `PROPERTY_ID` 填到 `NEXT_PUBLIC_TAWK_PROPERTY_ID`。
+5. 把 `WIDGET_ID` 填到 `NEXT_PUBLIC_TAWK_WIDGET_ID`。
+6. 在 Vercel 项目 `Settings` → `Environment Variables` 添加上面两个变量，重新部署。
+
+员工接待方式：
+
+- 电脑端登录 Tawk.to Dashboard。
+- 手机安装 Tawk.to App，用员工账号登录。
+- 站长在 Tawk.to 后台邀请员工账号，不建议多人共用一个密码。
+
+备用联系方式集中在 `content/site.ts`：
+
+```text
+wechatId: "dcpluspro"
+serviceHours: "早10点 - 晚24点"
+```
+
 ## 检查 sitemap.xml 和 robots.txt
 
 本地启动后访问：
