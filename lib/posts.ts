@@ -11,6 +11,7 @@ export type PostFrontmatter = {
   category: string;
   slug: string;
   date: string;
+  updatedAt?: string;
   keywords: string[];
   productId: string;
   productUrl: string;
@@ -108,6 +109,7 @@ function normalizeFrontmatter(data: Record<string, unknown>, filePath: string) {
     categorySlug: categoryConfig?.slug ?? category.toLowerCase().replace(/\s+/g, "-"),
     slug: String(data.slug),
     date: String(data.date),
+    updatedAt: data.updatedAt ? String(data.updatedAt) : undefined,
     keywords,
     productId: String(data.productId),
     productUrl: String(data.productUrl),

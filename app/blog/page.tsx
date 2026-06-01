@@ -17,6 +17,29 @@ export const metadata: Metadata = {
 
 export default function BlogPage() {
   const posts = getAllPosts();
+  const postBySlug = new Map(posts.map((post) => [post.slug, post]));
+  const pillarSlugs = [
+    "ai-membership-payment-failed-guide",
+    "ai-membership-recharge-vs-own-card",
+    "chatgpt-plus-guonei-chongzhi",
+    "claude-pro-chongzhi-zhuyi",
+    "gemini-pro-guonei-shiyong",
+    "grok-huiyuan-kaitong",
+  ];
+  const conversionSlugs = [
+    "chatgpt-plus-credit-card-declined",
+    "chatgpt-plus-paid-but-not-active",
+    "claude-pro-account-not-eligible",
+    "gemini-advanced-payment-failed",
+    "grok-supergrok-credit-card-declined",
+    "supergrok-open-failed-reasons",
+  ];
+  const pillarPosts = pillarSlugs
+    .map((slug) => postBySlug.get(slug))
+    .filter((post): post is (typeof posts)[number] => Boolean(post));
+  const conversionPosts = conversionSlugs
+    .map((slug) => postBySlug.get(slug))
+    .filter((post): post is (typeof posts)[number] => Boolean(post));
 
   return (
     <>
@@ -67,6 +90,36 @@ export default function BlogPage() {
               </p>
             </a>
           ))}
+        </div>
+      </section>
+
+      <section className="px-4 pb-14 sm:px-6 lg:px-8">
+        <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[1fr_1fr]">
+          <div>
+            <SectionHeading
+              eyebrow="Pillar Guides"
+              title="先读这些支柱文章"
+              description="这些页面负责承接大词和总览问题，适合作为 ChatGPT、Claude、Gemini、Grok 开通前的第一站。"
+            />
+            <div className="mt-8 grid gap-5">
+              {pillarPosts.map((post) => (
+                <ArticleCard key={post.slug} post={post} />
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <SectionHeading
+              eyebrow="Troubleshooting"
+              title="高转化问题排查"
+              description="信用卡被拒、付款成功未到账、账号不符合、开通失败这类搜索词最接近真实下单决策，优先给用户答案。"
+            />
+            <div className="mt-8 grid gap-5">
+              {conversionPosts.map((post) => (
+                <ArticleCard key={post.slug} post={post} />
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 

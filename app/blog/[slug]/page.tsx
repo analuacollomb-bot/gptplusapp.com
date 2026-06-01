@@ -125,7 +125,7 @@ export default async function PostPage({ params }: PostPageProps) {
     headline: post.title,
     description: post.description,
     datePublished: post.date,
-    dateModified: post.date,
+    dateModified: post.updatedAt ?? post.date,
     author: {
       "@type": "Organization",
       name: siteConfig.chineseBrand,

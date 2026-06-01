@@ -9,7 +9,9 @@
     "lint": "eslint",
     "scrape:products": "tsx scripts/scrape-products.ts",
     "generate:articles": "tsx scripts/generate-seo-articles.ts",
-    "import:telegram": "tsx scripts/import-telegram-posts.ts"
+    "import:telegram": "tsx scripts/import-telegram-posts.ts",
+    "audit:indexing": "tsx scripts/improve-indexing-content.ts --report-only",
+    "improve:indexing": "tsx scripts/improve-indexing-content.ts"
   },
   "dependencies": {
     "gray-matter": "^4.0.3",
