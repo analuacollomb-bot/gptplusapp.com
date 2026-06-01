@@ -12,6 +12,7 @@ export type ProductCategory =
   | "Poe"
   | "Perplexity"
   | "陈鹏AI服务"
+  | "AI教程"
   | "Other";
 
 export type Product = {
@@ -104,6 +105,7 @@ export const productCategories: ProductCategory[] = [
   "Poe",
   "Perplexity",
   "陈鹏AI服务",
+  "AI教程",
   "Other",
 ];
 
