@@ -42,6 +42,24 @@ body {
     "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
 }
 
+body {
+  top: 0 !important;
+}
+
+.goog-te-banner-frame,
+.goog-te-balloon-frame,
+.goog-te-gadget,
+.skiptranslate iframe,
+iframe.skiptranslate {
+  display: none !important;
+}
+
+#goog-gt-tt,
+.goog-tooltip,
+.goog-tooltip:hover {
+  display: none !important;
+}
+
 ::selection {
   background: var(--gold-soft);
   color: var(--obsidian);

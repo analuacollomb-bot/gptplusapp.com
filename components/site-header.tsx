@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight, BookOpen, LifeBuoy, ShoppingBag } from "lucide-react";
+import { LanguageSwitcher } from "@/components/language-switcher";
 import { navItems, siteConfig } from "@/lib/site";
 
 export function SiteHeader() {
@@ -45,6 +46,7 @@ export function SiteHeader() {
         </nav>
 
         <div className="ml-auto hidden items-center gap-2 lg:flex">
+          <LanguageSwitcher />
           <Link
             className="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-[#d8c39b] bg-[#fffaf0] px-3 py-2 text-sm font-bold text-[#3a2817] transition hover:border-[#c99f55] hover:bg-[#fff5dc]"
             href="/contact"
@@ -64,15 +66,18 @@ export function SiteHeader() {
           </a>
         </div>
 
-        <a
-          className="ml-auto inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-[#8c612b] bg-[#17110c] px-3 py-2 text-sm font-bold text-[#fff7e6] shadow-sm lg:hidden"
-          href={siteConfig.productUrl}
-          target="_blank"
-          rel="noreferrer"
-        >
-          <ShoppingBag aria-hidden="true" className="size-4" />
-          下单
-        </a>
+        <div className="ml-auto flex items-center gap-2 lg:hidden">
+          <LanguageSwitcher />
+          <a
+            className="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-[#8c612b] bg-[#17110c] px-3 py-2 text-sm font-bold text-[#fff7e6] shadow-sm"
+            href={siteConfig.productUrl}
+            target="_blank"
+            rel="noreferrer"
+          >
+            <ShoppingBag aria-hidden="true" className="size-4" />
+            下单
+          </a>
+        </div>
       </div>
 
       <div className="border-t border-[#d8c39b]/70 bg-[#fffaf0] lg:hidden">
