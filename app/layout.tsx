@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
+import { Analytics } from "@vercel/analytics/next";
 import { ConversionWidgets } from "@/components/conversion-widgets";
 import { LiveChatProvider } from "@/components/live-chat-provider";
 import { SiteFooter } from "@/components/site-footer";
@@ -64,6 +65,7 @@ export default function RootLayout({
         <SiteFooter />
         <LiveChatProvider />
         <ConversionWidgets />
+        <Analytics />
       </body>
     </html>
   );
