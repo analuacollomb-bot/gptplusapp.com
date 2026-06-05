@@ -118,7 +118,8 @@ export function ProductPage({ slug }: { slug: CategorySlug }) {
   const relatedProducts = getProductsByCategory(category.name, 4);
   const Icon = category.icon;
   const hero = productHero[slug];
-  const featuredPosts = posts.slice(0, slug === "chatgpt" ? 10 : slug === "claude" ? 30 : 6);
+  const featuredLimit = slug === "chatgpt" ? 120 : slug === "claude" ? 30 : 6;
+  const featuredPosts = posts.slice(0, featuredLimit);
   const proofCards = [
     { title: "正规渠道", description: "不拼低价，先看商品说明和适用账号。", icon: BadgeCheck },
     { title: "长期稳定", description: "服务长期维护，开通与续费路径清楚。", icon: ShieldCheck },
