@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
   ArrowUpRight,
@@ -19,9 +20,13 @@ import { siteContent } from "@/content/site";
 const favoriteStorageKey = "gptplusapp-favorite-dismissed";
 
 export function ConversionWidgets() {
+  const pathname = usePathname();
   const [showFavorite, setShowFavorite] = useState(false);
   const [showService, setShowService] = useState(false);
   const [copied, setCopied] = useState<"wechat" | "url" | null>(null);
+  const orderUrl = pathname?.startsWith("/chatgpt")
+    ? "https://gpt3plus.com/cat/19"
+    : siteContent.primaryCtaUrl;
 
   useEffect(() => {
     const dismissed = window.localStorage.getItem(favoriteStorageKey);
@@ -105,7 +110,7 @@ export function ConversionWidgets() {
       <div className="fixed bottom-5 right-4 z-[65] flex flex-col items-end gap-3 sm:right-6">
         <a
           className="hidden items-center gap-3 rounded-full border border-[#d8c39b] bg-[linear-gradient(135deg,#d7ad5f,#9a6a2f)] px-5 py-3 text-sm font-black text-[#fff7e6] shadow-2xl shadow-[#9a6a2f]/25 transition hover:-translate-y-0.5 hover:brightness-110 sm:inline-flex"
-          href={siteContent.primaryCtaUrl}
+          href={orderUrl}
           target="_blank"
           rel="noreferrer"
         >
@@ -167,7 +172,7 @@ export function ConversionWidgets() {
               </button>
               <a
                 className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-[#8c612b] bg-[linear-gradient(135deg,#1a120c,#3a2817_54%,#9a6a2f)] px-4 py-2 text-sm font-black text-[#fff7e6] transition hover:brightness-110"
-                href={siteContent.primaryCtaUrl}
+                href={orderUrl}
                 target="_blank"
                 rel="noreferrer"
               >

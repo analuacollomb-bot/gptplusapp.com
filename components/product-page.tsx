@@ -35,6 +35,7 @@ const productHero = {
     label: "陈鹏AI服务 · ChatGPT 会员",
     title: "ChatGPT Plus 稳定代充",
     accent: "稳定靠谱",
+    orderUrl: "https://gpt3plus.com/cat/19",
     subtitle:
       "不用自己折腾外卡和复杂订阅流程。先确认账号状态，再按商品说明自助下单，适合需要 Plus / Pro 能力、又想减少支付失败折腾的用户。",
     primary: "立即充值",
@@ -45,6 +46,7 @@ const productHero = {
     label: "陈鹏AI服务 · Claude 会员",
     title: "Claude Pro / Max 稳定代充",
     accent: "先验账号",
+    orderUrl: "https://gpt3plus.com/",
     subtitle:
       "Claude 对账号状态、组织信息和风控环境更敏感。先看清 Free / Pro / Max、overdue 和 Organization ID，再决定是否下单。",
     primary: "立即开通",
@@ -55,6 +57,7 @@ const productHero = {
     label: "陈鹏AI服务 · Gemini 会员",
     title: "Gemini Pro 稳定开通",
     accent: "Google生态",
+    orderUrl: "https://gpt3plus.com/",
     subtitle:
       "适合需要 Google 生态、文档协作、多模态和 Gemini Advanced 能力的用户。下单前重点确认 Google 账号、地区和付款资料状态。",
     primary: "立即开通",
@@ -65,6 +68,7 @@ const productHero = {
     label: "陈鹏AI服务 · Grok 会员",
     title: "Grok / SuperGrok 稳定代充",
     accent: "X生态入口",
+    orderUrl: "https://gpt3plus.com/",
     subtitle:
       "适合经常使用 X、关注实时内容和想体验 xAI 模型的用户。下单前先确认 X 账号状态、邮箱和商品对应权益。",
     primary: "立即开通",
@@ -77,6 +81,7 @@ const productHero = {
     label: string;
     title: string;
     accent: string;
+    orderUrl: string;
     subtitle: string;
     primary: string;
     secondary: string;
@@ -148,7 +153,7 @@ export function ProductPage({ slug }: { slug: CategorySlug }) {
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
               <ButtonLink
                 external
-                href={siteConfig.productUrl}
+                href={hero.orderUrl}
                 icon={Sparkles}
                 variant="dark"
                 className="min-h-14 rounded-2xl px-7 text-base font-black"
