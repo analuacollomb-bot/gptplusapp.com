@@ -362,6 +362,7 @@ export const footerColumns = [
       { label: "全部教程", href: "/blog" },
       { label: "商品入口", href: "/products" },
       { label: "用户反馈", href: "/reviews" },
+      { label: "帮助中心", href: "/help" },
       { label: "常见问题", href: "/faq" },
       { label: "关于我们", href: "/about" },
       { label: "联系客服", href: "/contact" },

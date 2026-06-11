@@ -39,7 +39,7 @@ export const siteContent = {
     { label: "商品", href: "/products" },
     { label: "教程", href: "/blog" },
     { label: "评价", href: "/reviews" },
-    { label: "FAQ", href: "/faq" },
+    { label: "帮助", href: "/help" },
   ],
   faqList: [
     {
