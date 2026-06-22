@@ -381,5 +381,37 @@ content/products.ts      商品类型与手动商品配置
 content/posts/           Markdown/MDX 文章目录
 scripts/scrape-products.ts       公开商品抓取脚本
 scripts/generate-seo-articles.ts 批量文章生成脚本
+scripts/generate-daily-problem-posts.ts 每日 10 篇真实问题解答脚本
 public/brand/avatar.png  陈鹏AI服务品牌头像
 ```
+
+## 每日 10 篇问题解答
+
+每日内容脚本会扫描 `content/posts` 里已有标题，标题相似度超过 70% 会自动跳过并换题，避免重复页面。
+
+手动生成当天 10 篇：
+
+```bash
+npm run generate:daily-content
+```
+
+指定日期或数量：
+
+```bash
+npm run generate:daily-content -- --date=2026-06-22 --count=10
+```
+
+文章结构固定为：
+
+```text
+# 标题
+## 一句话答案
+## 问题原因
+## 解决方法
+## 常见误区
+## 实际经验分享
+## 相关问题
+## 关于陈鹏AI服务
+```
+
+新增文章会自动进入 `/blog/[slug]`，`sitemap.xml` 和 `rss.xml` 会在构建时自动更新。
