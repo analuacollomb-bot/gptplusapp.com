@@ -382,6 +382,7 @@ content/posts/           Markdown/MDX 文章目录
 scripts/scrape-products.ts       公开商品抓取脚本
 scripts/generate-seo-articles.ts 批量文章生成脚本
 scripts/generate-daily-problem-posts.ts 每日 10 篇真实问题解答脚本
+scripts/daily-content-publish.sh 每日生成、验证、提交和推送脚本
 public/brand/avatar.png  陈鹏AI服务品牌头像
 ```
 
@@ -395,10 +396,22 @@ public/brand/avatar.png  陈鹏AI服务品牌头像
 npm run generate:daily-content
 ```
 
+如果当前环境没有 `npm`，或需要一次性完成生成、验证、提交和推送：
+
+```bash
+./scripts/daily-content-publish.sh
+```
+
 指定日期或数量：
 
 ```bash
 npm run generate:daily-content -- --date=2026-06-22 --count=10
+```
+
+发布脚本支持指定日期和数量：
+
+```bash
+DAILY_ARTICLE_DATE=2026-06-24 DAILY_ARTICLE_COUNT=10 ./scripts/daily-content-publish.sh
 ```
 
 文章结构固定为：

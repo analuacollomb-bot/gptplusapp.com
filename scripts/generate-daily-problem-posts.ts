@@ -335,7 +335,7 @@ function buildCandidates() {
           continue;
         }
 
-        const title = `${subject}${issue.label}`;
+        const title = buildTopicTitle(subject, issue);
         const slug = `daily-${date}-${slugify(`${subject}-${issue.slug}`)}`;
         candidates.push({
           title,
@@ -354,6 +354,15 @@ function buildCandidates() {
     const scoreB = stableScore(`${date}-${b.category}-${b.title}`, dayNumber);
     return scoreA - scoreB;
   });
+}
+
+function buildTopicTitle(subject: string, issue: Issue) {
+  const label =
+    subject.endsWith("账号") && issue.label.startsWith("账号")
+      ? issue.label.replace(/^账号/, "")
+      : issue.label;
+
+  return `${subject}${label}`;
 }
 
 function isCompatibleTopic(subject: string, issue: Issue) {
