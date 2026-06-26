@@ -24,12 +24,15 @@ fi
 DATE="${DAILY_ARTICLE_DATE:-$(TZ=Asia/Shanghai date +%F)}"
 COUNT="${DAILY_ARTICLE_COUNT:-10}"
 
-"$NODE_BIN" node_modules/tsx/dist/cli.mjs scripts/generate-daily-problem-posts.ts --date="$DATE" --count="$COUNT"
+"$NODE_BIN" --import tsx scripts/generate-daily-problem-posts.ts --date="$DATE" --count="$COUNT"
 "$NODE_BIN" node_modules/eslint/bin/eslint.js .
 "$NODE_BIN" node_modules/typescript/bin/tsc --noEmit
 "$NODE_BIN" node_modules/next/dist/bin/next build --webpack
 
-mapfile -t daily_files < <(find content/posts -maxdepth 1 -type f -name "daily-${DATE}-*.md" | sort)
+daily_files=()
+while IFS= read -r file; do
+  daily_files+=("$file")
+done < <(find content/posts -maxdepth 1 -type f -name "daily-${DATE}-*.md" | sort)
 
 if [[ "${#daily_files[@]}" -eq 0 ]]; then
   echo "No daily article files found for ${DATE}."

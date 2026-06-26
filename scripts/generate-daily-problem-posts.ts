@@ -255,10 +255,54 @@ const issues: Issue[] = [
 ];
 
 const titleSubjects: Record<Category, string[]> = {
-  ChatGPT: ["ChatGPT Plus", "ChatGPT Pro", "ChatGPT 账号", "ChatGPT App", "ChatGPT 记忆功能", "ChatGPT 文件上传"],
-  Claude: ["Claude Pro", "Claude Max", "Claude Code", "Claude 账号", "Claude 长文生成", "Claude Usage Limit"],
-  Gemini: ["Gemini Advanced", "Gemini Pro", "Google AI 会员", "Gemini 账号", "Gemini App", "Gemini 多模态"],
-  Grok: ["Grok", "SuperGrok", "Grok Heavy", "Grok 账号", "Grok 图片生成", "Grok 视频生成"],
+  ChatGPT: [
+    "ChatGPT Plus",
+    "ChatGPT Pro",
+    "ChatGPT 账号",
+    "ChatGPT App",
+    "ChatGPT 记忆功能",
+    "ChatGPT 文件上传",
+    "ChatGPT Projects",
+    "ChatGPT Deep Research",
+    "ChatGPT 语音模式",
+    "ChatGPT Tasks",
+  ],
+  Claude: [
+    "Claude Pro",
+    "Claude Max",
+    "Claude Code",
+    "Claude 账号",
+    "Claude 长文生成",
+    "Claude Usage Limit",
+    "Claude Artifacts",
+    "Claude Projects",
+    "Claude Sonnet",
+    "Claude Desktop",
+  ],
+  Gemini: [
+    "Gemini Advanced",
+    "Gemini Pro",
+    "Google AI 会员",
+    "Gemini 账号",
+    "Gemini App",
+    "Gemini 多模态",
+    "Gemini Live",
+    "Gemini Workspace",
+    "Gemini 2.5 Pro",
+    "Gemini Deep Research",
+  ],
+  Grok: [
+    "Grok",
+    "SuperGrok",
+    "Grok Heavy",
+    "Grok 账号",
+    "Grok 图片生成",
+    "Grok 视频生成",
+    "Grok Think",
+    "Grok Studio",
+    "Grok Voice",
+    "Grok Workspace",
+  ],
 };
 
 async function main() {
@@ -306,6 +350,9 @@ async function loadExistingPosts(): Promise<ExistingPost[]> {
 
   for (const file of files) {
     if (!file.endsWith(".md") && !file.endsWith(".mdx")) {
+      continue;
+    }
+    if (file.startsWith(`daily-${date}-`)) {
       continue;
     }
 
@@ -366,18 +413,20 @@ function buildTopicTitle(subject: string, issue: Issue) {
 }
 
 function isCompatibleTopic(subject: string, issue: Issue) {
-  const isFeature = /文件上传|记忆功能|图片生成|视频生成|多模态/.test(subject);
-  const isApp = /App/.test(subject);
+  const isFeature = /文件上传|记忆功能|图片生成|视频生成|多模态|语音模式|Live|Voice|Artifacts|Projects|Studio|Workspace|Deep Research|Tasks/.test(
+    subject,
+  );
+  const isApp = /App|Desktop/.test(subject);
   const isAccount = /账号/.test(subject);
   const isCode = /Code/.test(subject);
   const isCoreProduct = !isFeature && !isApp && !isAccount && !/Usage Limit/.test(subject);
 
   if (issue.slug === "worth-buying") {
-    return isCoreProduct;
+    return isCoreProduct || /Projects|Deep Research|Artifacts|Studio|Workspace|Live|Voice|语音模式|Tasks/.test(subject);
   }
 
   if (issue.slug === "free-vs-paid") {
-    return isCoreProduct;
+    return isCoreProduct || /Deep Research|Projects|Artifacts|Studio|Workspace|Live|Voice|语音模式|Tasks/.test(subject);
   }
 
   if (issue.slug === "payment-failed") {
@@ -401,15 +450,20 @@ function isCompatibleTopic(subject: string, issue: Issue) {
   }
 
   if (issue.slug === "domestic-use") {
-    return isCoreProduct || isAccount || isApp;
+    return isCoreProduct || isAccount || isApp || /Live|Voice|Studio|Workspace/.test(subject);
   }
 
   if (issue.slug === "file-upload-failed") {
-    return isCoreProduct || /文件上传|多模态/.test(subject);
+    return isCoreProduct || /文件上传|多模态|Artifacts|Projects|Workspace/.test(subject);
   }
 
   if (issue.slug === "coding-use") {
-    return isCode || /ChatGPT Plus|ChatGPT Pro|Claude Pro|Claude Max/.test(subject);
+    return (
+      isCode ||
+      /ChatGPT Plus|ChatGPT Pro|Claude Pro|Claude Max|Claude Code|ChatGPT Projects|Claude Artifacts|Claude Projects|Gemini 2.5 Pro|Grok Studio/.test(
+        subject,
+      )
+    );
   }
 
   if (issue.slug === "something-went-wrong") {
