@@ -382,16 +382,17 @@ function buildCandidates() {
           continue;
         }
 
-        const title = buildTopicTitle(subject, issue);
-        const slug = `daily-${date}-${slugify(`${subject}-${issue.slug}`)}`;
-        candidates.push({
-          title,
-          slug,
-          category,
-          productId: products[category].id,
-          productUrl: products[category].url,
-          issue,
-        });
+        for (const title of buildTopicTitles(subject, issue)) {
+          const slug = `daily-${date}-${slugify(title)}`;
+          candidates.push({
+            title,
+            slug,
+            category,
+            productId: products[category].id,
+            productUrl: products[category].url,
+            issue,
+          });
+        }
       }
     }
   }
@@ -403,13 +404,100 @@ function buildCandidates() {
   });
 }
 
-function buildTopicTitle(subject: string, issue: Issue) {
+function buildTopicTitles(subject: string, issue: Issue) {
   const label =
     subject.endsWith("账号") && issue.label.startsWith("账号")
       ? issue.label.replace(/^账号/, "")
       : issue.label;
 
-  return `${subject}${label}`;
+  const templates = getTitleTemplates(subject, issue, label);
+  return Array.from(new Set(templates.map((item) => item.trim()).filter(Boolean)));
+}
+
+function getTitleTemplates(subject: string, issue: Issue, label: string) {
+  const defaultTitle = `${subject}${label}`;
+
+  switch (issue.slug) {
+    case "payment-failed":
+      return [
+        defaultTitle,
+        `${subject}${label}怎么排查`,
+        `${subject}${label}的常见原因`,
+        `${subject}付款被拒后怎么处理`,
+      ];
+    case "login-failed":
+      return [
+        defaultTitle,
+        `${subject}${label}怎么恢复`,
+        `${subject}登不上去怎么处理`,
+        `${subject}收不到验证码怎么办`,
+      ];
+    case "worth-buying":
+      return [
+        defaultTitle,
+        `${subject}适合什么人`,
+        `${subject}有必要开通吗`,
+        `${subject}适不适合长期用`,
+      ];
+    case "free-vs-paid":
+      return [
+        defaultTitle,
+        `${subject}和免费版怎么选`,
+        `${subject}付费版和免费版区别`,
+        `${subject}升级前先看哪些差别`,
+      ];
+    case "something-went-wrong":
+      return [
+        defaultTitle,
+        `${subject}报 Something Went Wrong 怎么处理`,
+        `${subject}页面报错后先查什么`,
+        `${subject}异常提示一直不消失怎么办`,
+      ];
+    case "account-ban-risk":
+      return [
+        defaultTitle,
+        `${subject}风控风险怎么判断`,
+        `${subject}怎么用更稳`,
+        `${subject}异常后先停哪些操作`,
+      ];
+    case "cancel-subscription":
+      return [
+        defaultTitle,
+        `${subject}怎么关自动续费`,
+        `${subject}取消续费后还会扣款吗`,
+        `${subject}订阅页面找不到怎么办`,
+      ];
+    case "usage-limit":
+      return [
+        defaultTitle,
+        `${subject}额度用完后怎么办`,
+        `${subject}提示 Usage Limit 先看什么`,
+        `${subject}限制刷新前怎么继续用`,
+      ];
+    case "domestic-use":
+      return [
+        defaultTitle,
+        `${subject}国内使用先准备什么`,
+        `${subject}国内登录和支付怎么排查`,
+        `${subject}国内环境下怎么用更稳`,
+      ];
+    case "file-upload-failed":
+      return [
+        defaultTitle,
+        `${subject}上传文件失败先查什么`,
+        `${subject}文件一直传不上去怎么办`,
+        `${subject}上传报错和会员有关系吗`,
+      ];
+    case "coding-use":
+      return [
+        defaultTitle,
+        `${subject}写代码到底靠不靠谱`,
+        `${subject}做编程助手怎么提需求`,
+        `${subject}用于代码排错时要给哪些信息`,
+      ];
+    default:
+      return [defaultTitle];
+  }
 }
 
 function isCompatibleTopic(subject: string, issue: Issue) {
