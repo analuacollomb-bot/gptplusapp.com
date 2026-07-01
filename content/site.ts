@@ -2,7 +2,7 @@ export const siteContent = {
   siteName: "GPT Plus App",
   brandName: "陈鹏AI服务",
   domain: "gptplusapp.com",
-  baseUrl: "https://gptplusapp.com",
+  baseUrl: "https://www.gptplusapp.com",
   avatar: "/brand/avatar.png",
   telegramUrl: "https://t.me/netfix666",
   wechatId: "dcpluspro",

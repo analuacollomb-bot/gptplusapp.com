@@ -281,8 +281,8 @@ http://localhost:3000/robots.txt
 部署后访问：
 
 ```text
-https://gptplusapp.com/sitemap.xml
-https://gptplusapp.com/robots.txt
+https://www.gptplusapp.com/sitemap.xml
+https://www.gptplusapp.com/robots.txt
 ```
 
 `sitemap.xml` 会包含首页、产品专题页、商品页、教程列表、文章页、评价页、FAQ、关于和联系页面。
@@ -298,7 +298,7 @@ docs/google-indexing-standard.md
 上线后优先到 Google Search Console 添加 `gptplusapp.com` 域名资源，验证 DNS，提交：
 
 ```text
-https://gptplusapp.com/sitemap.xml
+https://www.gptplusapp.com/sitemap.xml
 ```
 
 再手动请求索引首页、`/topics`、`/telegram`、四个产品页、强搜索词专题页、几篇核心文章和最新导入的实时博客文章。
