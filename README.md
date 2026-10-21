@@ -469,6 +469,23 @@ ADMIN_PORT=4319 SITE_PREVIEW_PORT=3001 ADMIN_NO_OPEN=1 bash scripts/local-admin.
 
 导航“商品”和“教程”之间的 **订阅查询** 进入 `/tools/gpt-billing`，桌面、手机和页脚均有入口。
 
+### 2026-10-21 首版生产验证记录：实时查询尚未修复
+
+- `c8fa947` 已通过原仓库 `main` 部署至 Vercel，生产状态 Ready；正式页面 `https://www.gptplusapp.com/tools/gpt-billing` 返回 200，导航入口、本地解析和合成示例交互已验证。
+- 本站 API 的同源输入校验返回 `400 INVALID_INPUT`，跨站请求返回 `403 ORIGIN_REJECTED`；响应不缓存。
+- 相同的合成无效凭证，本机查询返回 `401 TOKEN_REJECTED`，生产查询返回 `502 UPSTREAM_FORBIDDEN`，后者仅在 ChatGPT 上游返回 HTTP 403 时产生。用户随后反馈：本机真实账号查询成功，正式页面真实账号仍提示拒绝查询。**部署成功不等于生产实时查询可用。**
+- Vercel Resources 和 Runtime Logs 已核对：查询函数使用 Node.js 24.x、30 秒上限，在美国 Washington, D.C. 的 `iad1` 执行；本站防火墙放行，记录到固定 ChatGPT 账号检查路径的 GET。现有日志没有上游响应头，不能据此断言是封 IP、Cloudflare 挑战或地区配置错误。
+- 原有文章未修改，未读取或记录用户凭证，未接入未知代理或第三方凭证转发服务。现有项目文档未发现其他可接入的查询后端。
+- 后续开发应以“生产实时查询未完成”为起点；需进一步取得上游允许且可维护的查询方式。重复部署、切换地区或购买静态 IP 不能当作已经证实的修复方案。不要再次要求用户发送 Token 或完整 Session。
+
+### 当前可用范围
+
+用户确认没有现成的查询服务可接入，因此生产版本默认停用实时查询，页面明确显示当前不可用，保留官方订阅核对说明和已有账单 JSON 的浏览器内解析。页面不再引导生产用户获取或提交 Token / Session；旧页面及直接调用 API 的请求返回 `503 LIVE_QUERY_UNAVAILABLE`，服务端不读取请求正文或向 ChatGPT 转发。线上实时查询仍未完成，不能把停用故障入口说成已修好实时功能。
+
+实时查询仅在 `NODE_ENV=development` 且 `VERCEL` 不为 `1` 时启用。原桌面文章后台启动器使用本机 `next dev`，保留已验证的查询工作流；`next build` 后的 `next start` 展示生产停用状态，便于本地复核。页面和 API 使用同一服务端判断，不通过浏览器参数或公开开关重新启用。
+
+### 工作方式
+
 - **快速查询**：输入用户本人的 ChatGPT Access Token 或完整 Session JSON，读取当前账号套餐及接口实际返回的权益信息。
 - **深度查询**：在账号查询基础上，补充所选账号的订阅账期、到期时间、自动续费和欠费状态；字段未返回时保持“未知”，部分查询失败会明确提示。
 - **本地解析**：只在浏览器读取已有账单 JSON，不联网，也不把 Token 声明当成已经核实的订阅信息。
@@ -486,6 +503,6 @@ ADMIN_PORT=4319 SITE_PREVIEW_PORT=3001 ADMIN_NO_OPEN=1 bash scripts/local-admin.
 本地运行 `npm run admin` 后可访问 `http://127.0.0.1:3000/tools/gpt-billing`。定向验证：
 
 ```bash
-node --import tsx --test lib/gpt-billing.test.ts lib/gpt-billing-server.test.ts lib/gpt-billing-network.test.ts
+node --import tsx --test lib/gpt-billing.test.ts lib/gpt-billing-server.test.ts lib/gpt-billing-network.test.ts lib/gpt-billing-route.test.ts
 npx tsc --noEmit
 ```

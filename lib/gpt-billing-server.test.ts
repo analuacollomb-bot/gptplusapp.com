@@ -1,7 +1,20 @@
-import test from "node:test";
+import test, { after, before } from "node:test";
 import assert from "node:assert/strict";
 import { BillingQueryError, queryGptBilling, readLimitedBody } from "./gpt-billing-server";
 import { POST } from "../app/api/tools/gpt-billing/route";
+
+// These route validation cases exercise the enabled desktop workflow.
+// Production early rejection is covered separately in gpt-billing-route.test.ts.
+const runtimeEnvironment = process.env as Record<string, string | undefined>;
+const originalNodeEnv = runtimeEnvironment.NODE_ENV;
+const originalVercel = runtimeEnvironment.VERCEL;
+before(() => { runtimeEnvironment.NODE_ENV = "development"; delete runtimeEnvironment.VERCEL; });
+after(() => {
+  if (originalNodeEnv === undefined) delete runtimeEnvironment.NODE_ENV;
+  else runtimeEnvironment.NODE_ENV = originalNodeEnv;
+  if (originalVercel === undefined) delete runtimeEnvironment.VERCEL;
+  else runtimeEnvironment.VERCEL = originalVercel;
+});
 
 const accountId = "12345678-1234-1234-1234-123456789abc";
 const secondId = "abcdef12-abcd-abcd-abcd-abcdef123456";

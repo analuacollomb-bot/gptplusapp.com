@@ -1,4 +1,5 @@
 import { billingInputLimit } from "@/lib/gpt-billing";
+import { isLiveBillingQueryEnabled } from "@/lib/gpt-billing-availability";
 import { BillingQueryError, queryGptBilling, readLimitedBody } from "@/lib/gpt-billing-server";
 
 export const runtime = "nodejs";
@@ -24,6 +25,11 @@ export async function POST(request: Request) {
   }
   if (!sameOrigin || request.headers.get("sec-fetch-site") === "cross-site") {
     return json({ success: false, code: "ORIGIN_REJECTED", message: "请在本站订阅查询页面操作。" }, 403);
+  }
+  // Old tabs and direct API callers must stop here, before reading credentials
+  // or opening an upstream request while production queries are unavailable.
+  if (!isLiveBillingQueryEnabled()) {
+    return json({ success: false, code: "LIVE_QUERY_UNAVAILABLE", message: "在线实时查询暂不可用。请打开 ChatGPT，在设置中查看订阅，或使用账单 JSON 本地解析。" }, 503);
   }
   if (!request.headers.get("content-type")?.toLowerCase().startsWith("application/json")) {
     return json({ success: false, code: "INVALID_BODY", message: "请使用 JSON 格式提交查询。" }, 415);

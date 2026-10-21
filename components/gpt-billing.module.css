@@ -14,6 +14,10 @@
 .mobileBreak { display: none; }
 .officialLink { display: inline-flex; align-items: center; gap: 8px; padding: 11px 15px; border: 1px solid #dfd2bd; border-radius: 9px; color: #745634; font-size: 13px; font-weight: 650; white-space: nowrap; }
 .officialLink:hover { background: #f4eddf; }
+.availability { display: flex; align-items: flex-start; gap: 12px; padding: 18px 21px; margin: 0 0 24px; border: 1px solid #e5d6b7; border-radius: 12px; background: #f8f0df; color: #896735; }
+.availability > svg { flex-shrink: 0; margin-top: 2px; }
+.availability h2 { margin: 0 0 6px; font-size: 15px; font-weight: 750; }
+.availability p { margin: 0; font-size: 12px; line-height: 1.85; color: #8b7553; }
 .workspace { display: grid; grid-template-columns: 1.04fr 1fr; align-items: start; gap: 24px; }
 .queryCard, .resultCard { border: 1px solid var(--line); border-radius: 17px; background: #fffefa; box-shadow: 0 5px 24px #35251004; min-width: 0; overflow: hidden; }
 .queryCard { padding: 27px; }
@@ -22,6 +26,7 @@
 .cardHeading h2 { font-size: 18px; line-height: 1.4; font-weight: 750; margin: 0; }
 .cardHeading p { font-size: 12px; color: var(--muted); margin: 4px 0 0; }
 .tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; border-radius: 9px; background: #f3efe8; padding: 4px; }
+.singleTab { grid-template-columns: 1fr; }
 .tabs button { display: flex; align-items: center; justify-content: center; gap: 7px; padding: 10px 6px; font-size: 13px; color: #807567; border-radius: 6px; cursor: pointer; white-space: nowrap; font-weight: 600; }
 .tabs button.selectedTab { background: #fffefa; color: #715128; box-shadow: 0 1px 4px #34291a14; }
 .modeDescription { min-height: 38px; font-size: 12px; line-height: 1.7; color: var(--muted); margin: 14px 0 16px; }
