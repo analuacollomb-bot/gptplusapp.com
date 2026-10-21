@@ -1,5 +1,12 @@
 @import "tailwindcss";
 
+/* The website owns the gold headphone launcher; the SDK still owns the chat.
+   A verified support:resize message reveals its iframe only while expanded. */
+iframe[title="在线客服"][src^="https://kf-test.gptplusapp.com/widget/index.html?siteKey=site_b380909894065bc7af86c05a&"]:not([data-chenpeng-chat-open="true"]) {
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
 :root {
   --ivory: #fbf6ea;
   --warm-white: #fffaf0;

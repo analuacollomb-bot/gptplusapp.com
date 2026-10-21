@@ -7,14 +7,17 @@ export const OPEN_LIVE_CHAT_EVENT = "chenpeng:open-live-chat";
 export function LiveChatLink({
   children,
   className,
+  ariaLabel,
 }: {
   children: ReactNode;
   className?: string;
+  ariaLabel?: string;
 }) {
   return (
     <a
       href="/contact#online-chat"
       className={className}
+      aria-label={ariaLabel}
       onClick={(event) => {
         if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
 
