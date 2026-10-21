@@ -3,6 +3,7 @@
 import Script from "next/script";
 import { useEffect, useRef, useState } from "react";
 import { Headphones } from "lucide-react";
+import { OPEN_LIVE_CHAT_EVENT } from "@/components/live-chat-link";
 
 declare global {
   interface Window {
@@ -17,9 +18,21 @@ declare global {
 export function LiveChatProvider() {
   const [unavailable, setUnavailable] = useState(false);
   const subscriptions = useRef<(() => void)[]>([]);
+  const ready = useRef(false);
+  const didAutoOpen = useRef(false);
 
   useEffect(() => () => {
     subscriptions.current.forEach(unsubscribe => unsubscribe());
+  }, []);
+
+  useEffect(() => {
+    const openChat = (event: Event) => {
+      if (!ready.current || !window.SupportWidget) return;
+      event.preventDefault();
+      window.SupportWidget.open();
+    };
+    window.addEventListener(OPEN_LIVE_CHAT_EVENT, openChat);
+    return () => window.removeEventListener(OPEN_LIVE_CHAT_EVENT, openChat);
   }, []);
 
   return (
@@ -33,12 +46,25 @@ export function LiveChatProvider() {
           subscriptions.current.forEach(unsubscribe => unsubscribe());
           const widget = window.SupportWidget;
           subscriptions.current = widget ? [
-            widget.on("support:config", () => setUnavailable(false)),
-            widget.on("support:unavailable", () => setUnavailable(true)),
+            widget.on("support:config", () => {
+              ready.current = true;
+              setUnavailable(false);
+              if (!didAutoOpen.current && window.location.pathname === "/contact" && window.location.hash === "#online-chat") {
+                didAutoOpen.current = true;
+                widget.open();
+              }
+            }),
+            widget.on("support:unavailable", () => {
+              ready.current = false;
+              setUnavailable(true);
+            }),
           ] : [];
           if (!widget) setUnavailable(true);
         }}
-        onError={() => setUnavailable(true)}
+        onError={() => {
+          ready.current = false;
+          setUnavailable(true);
+        }}
       />
       {unavailable && (
         <a

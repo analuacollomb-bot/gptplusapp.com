@@ -8,6 +8,7 @@ import {
   ShoppingBag,
 } from "lucide-react";
 import { ButtonLink } from "@/components/button-link";
+import { LiveChatLink } from "@/components/live-chat-link";
 import { siteContent } from "@/content/site";
 import { siteConfig } from "@/lib/site";
 
@@ -54,9 +55,9 @@ export default function ContactPage() {
               </ButtonLink>
             </div>
           </div>
-          <div className="gold-card-dark rounded-3xl p-6">
+          <div id="online-chat" className="gold-card-dark scroll-mt-32 rounded-3xl p-6">
             <div className="flex items-center gap-4">
-              <span className="relative size-24 overflow-hidden rounded-2xl border border-[#d7ad5f]/50">
+              <span className="relative size-24 shrink-0 overflow-hidden rounded-2xl border border-[#d7ad5f]/50">
                 <Image
                   src={siteConfig.avatar}
                   alt="陈鹏AI服务头像"
@@ -71,12 +72,19 @@ export default function ContactPage() {
                 <p className="text-sm font-black uppercase tracking-[0.16em] text-[#f0d89a]">
                   在线客服
                 </p>
-                <p className="mt-2 text-2xl font-black">网页聊天接入中</p>
+                <p className="mt-2 text-2xl font-black">陈鹏 AI 客服</p>
                 <p className="mt-2 text-sm leading-6 text-[#ead9b8]">
-                  接入后用户可直接在网页咨询，员工用客服后台或手机 App 接待。
+                  产品选择、购买与使用问题，AI 优先答复；需要进一步协助时，可在聊天中选择“联系人工”。
                 </p>
               </div>
             </div>
+            <LiveChatLink className="mt-6 inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-[#f0d89a]/35 bg-[#fff5dc] px-5 py-3 text-sm font-bold text-[#1a120c] transition hover:bg-white">
+              <MessageCircle aria-hidden="true" className="size-4" />
+              开始在线咨询
+            </LiveChatLink>
+            <p className="mt-3 text-xs leading-6 text-[#ead9b8]">
+              首次咨询请点击“向我们发送消息”并填写邮箱，称呼选填。暂时无法连接时，可使用下方备用联系方式。
+            </p>
             <div className="mt-6 rounded-2xl border border-[#f0d89a]/20 bg-[#fffaf0]/8 p-4">
               <p className="text-sm font-black text-[#f0d89a]">
                 备用联系方式
@@ -124,7 +132,7 @@ export default function ContactPage() {
         <div className="mx-auto max-w-5xl rounded-2xl border border-[#d8c39b] bg-[#fffaf0] p-6 shadow-sm">
           <h2 className="text-xl font-black text-[#17110c]">客服入口在哪里？</h2>
           <p className="mt-3 text-sm leading-8 text-[#6e6257]">
-            接入在线客服系统后，用户点击右下角客服按钮即可直接发消息。员工可以使用客服后台或手机 App 登录接待。当前备用方式为添加陈鹏个人微信号 {siteContent.wechatId}，请备注来意。下单和订单处理仍统一跳转到成交主站/发卡网 {siteConfig.productUrl}。
+            点击顶部“联系客服”、本页“开始在线咨询”或右下角客服入口，即可打开同一个客服窗口。AI 优先答复，复杂问题可在聊天中选择“联系人工”。首次需填写邮箱，已有会话可继续咨询。备用方式为添加陈鹏个人微信号 {siteContent.wechatId}，请备注来意。下单和订单处理请前往自助下单站。
           </p>
           <div className="mt-6 flex flex-col gap-3 sm:flex-row">
             <ButtonLink
@@ -135,9 +143,10 @@ export default function ContactPage() {
             >
               打开自助下单站
             </ButtonLink>
-            <ButtonLink href="/contact" icon={MessageCircle} variant="secondary">
-              查看客服说明
-            </ButtonLink>
+            <LiveChatLink className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-[#d8c39b] bg-[#fffaf0] px-4 py-2.5 text-sm font-semibold text-[#21170f] transition hover:border-[#c99f55] hover:bg-[#fff5dc]">
+              <MessageCircle aria-hidden="true" className="size-4" />
+              开始在线咨询
+            </LiveChatLink>
           </div>
         </div>
       </section>

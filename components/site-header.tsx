@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { ArrowUpRight, BookOpen, LifeBuoy, ShoppingBag } from "lucide-react";
 import { LanguageSwitcher } from "@/components/language-switcher";
+import { LiveChatLink } from "@/components/live-chat-link";
 import { PrivacyAwareLink as Link } from "@/components/privacy-aware-providers";
 import { navItems, siteConfig } from "@/lib/site";
 
@@ -47,13 +48,12 @@ export function SiteHeader() {
 
         <div className="ml-auto hidden shrink-0 items-center gap-2 whitespace-nowrap 2xl:flex">
           <LanguageSwitcher />
-          <Link
+          <LiveChatLink
             className="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-[#d8c39b] bg-[#fffaf0] px-3 py-2 text-sm font-bold text-[#3a2817] transition hover:border-[#c99f55] hover:bg-[#fff5dc]"
-            href="/contact"
           >
             <LifeBuoy aria-hidden="true" className="size-4 text-[#9a6a2f]" />
             联系客服
-          </Link>
+          </LiveChatLink>
           <a
             className="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-[#8c612b] bg-[linear-gradient(135deg,#1a120c,#3a2817_54%,#9a6a2f)] px-3 py-2 text-sm font-bold text-[#fff7e6] shadow-sm shadow-[#2b2118]/20 transition hover:brightness-110"
             href={siteConfig.productUrl}
@@ -103,12 +103,11 @@ export function SiteHeader() {
                 {item.label}
               </Link>
             ))}
-          <Link
+          <LiveChatLink
             className="min-w-fit rounded-lg border border-[#d8c39b] bg-[#fffaf0] px-3 py-2 text-xs font-bold text-[#4b3724]"
-            href="/contact"
           >
             客服
-          </Link>
+          </LiveChatLink>
         </nav>
       </div>
     </header>
