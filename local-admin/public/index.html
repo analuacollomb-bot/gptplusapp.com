@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <title>内容工作台 · GPT Plus App</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="stylesheet" href="/admin.css" />
+    <script src="/admin.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">跳到内容</a>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="后台导航">
+        <a class="brand" href="/" aria-label="GPT Plus App 内容工作台">
+          <span class="brand-mark" aria-hidden="true">G<span>+</span></span>
+          <span><strong>GPT PLUS APP</strong><small>你的内容，认真打理。</small></span>
+        </a>
+        <div class="workspace-label">WORKSPACE <span>本机</span></div>
+        <button class="nav-item active" id="nav-articles" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v15H4zM8 3v4m8-4v4M8 11h8m-8 4h5" /></svg>
+          文章管理 <span id="sidebar-count">—</span>
+        </button>
+        <button class="nav-item" id="nav-new" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5 4 4M4 20l5-1L20 8l-4-4L5 15z" /></svg>
+          写一篇新文章
+        </button>
+        <div class="sidebar-bottom">
+          <div class="local-indicator"><span></span>本地工作模式</div>
+          <p>文章保存在原项目里。<br />发布到本地后，线上更新仍需部署。</p>
+          <a id="site-preview-link" class="site-link" href="http://127.0.0.1:3000" target="_blank" rel="noreferrer">打开本地网站 <span aria-hidden="true">↗</span></a>
+          <div class="sidebar-footer">gptplusapp.com · 内容管理</div>
+        </div>
+      </aside>
+
+      <main id="main" class="main">
+        <header class="topbar">
+          <div class="breadcrumbs">工作空间 <span>/</span> <strong id="breadcrumb-current">文章管理</strong></div>
+          <div class="topbar-status"><span class="status-dot"></span>仅此电脑可访问</div>
+        </header>
+
+        <div id="connection-error" class="connection-error" role="alert" hidden></div>
+
+        <section id="list-view" class="view list-view" aria-labelledby="list-title">
+          <div class="page-heading">
+            <div><div class="eyebrow">CONTENT STUDIO</div><h1 id="list-title">把好内容，写出来。</h1><p>管理文章、打磨草稿，让每一次分享都有价值。</p></div>
+            <button class="button button-primary" id="new-article" type="button"><span aria-hidden="true">＋</span> 写新文章</button>
+          </div>
+
+          <div class="stats-grid">
+            <div class="stat-card"><span class="stat-icon" aria-hidden="true">▤</span><div><span class="stat-label">本地已发布</span><strong id="published-count">—</strong></div><span class="stat-note">原项目文章</span></div>
+            <div class="stat-card"><span class="stat-icon draft-icon" aria-hidden="true">✎</span><div><span class="stat-label">编辑中草稿</span><strong id="draft-count">—</strong></div><span class="stat-note">留住每个想法</span></div>
+            <div class="stat-card stat-info"><div class="stat-info-dot" aria-hidden="true"></div><div><strong>安心写作，本地保存</strong><p>保存草稿不会改动原文章；本地发布后再统一部署。</p></div></div>
+          </div>
+
+          <div class="article-panel">
+            <div class="panel-title-row"><h2>文章库 <span id="result-count" class="count-pill">—</span></h2><button id="refresh-list" class="button button-quiet" type="button"><span aria-hidden="true">↻</span> 刷新</button></div>
+            <div class="filters">
+              <label class="search-field"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4 4"/></svg><span class="sr-only">搜索文章</span><input id="search" type="search" placeholder="搜索标题、摘要或网址…" autocomplete="off" /></label>
+              <label class="filter-select"><span class="sr-only">按分类筛选</span><select id="category-filter"><option value="">全部分类</option></select></label>
+              <label class="filter-select"><span class="sr-only">按状态筛选</span><select id="status-filter"><option value="all">全部状态</option><option value="published">本地已发布</option><option value="draft">有草稿</option></select></label>
+            </div>
+            <div class="article-table-wrap" id="article-list" aria-live="polite" aria-busy="true">
+              <table class="article-table"><thead><tr><th scope="col">文章</th><th scope="col">分类</th><th scope="col">状态</th><th scope="col">文章日期</th><th scope="col"><span class="sr-only">操作</span></th></tr></thead><tbody id="article-rows"><tr><td colspan="5" class="loading-state">正在载入文章…</td></tr></tbody></table>
+            </div>
+            <div class="pagination"><span id="pagination-info">正在载入…</span><div><button class="pagination-button" id="previous-page" type="button" aria-label="上一页" disabled>←</button><span id="page-number">1 / 1</span><button class="pagination-button" id="next-page" type="button" aria-label="下一页" disabled>→</button></div></div>
+          </div>
+          <p class="workspace-footnote"><span aria-hidden="true">◇</span> 所有修改都留在当前项目。后台不会自动推送 Git 或部署网站。</p>
+        </section>
+
+        <section id="editor-view" class="view editor-view" aria-labelledby="editor-title" hidden>
+          <div class="editor-heading">
+            <div><button class="back-link" id="back-to-list" type="button">← 返回文章库</button><h1 id="editor-title">写一篇新文章</h1><p id="editor-status" role="status">新想法，从这里开始。</p></div>
+            <div class="editor-actions"><a class="button button-quiet" id="view-local-article" href="#" target="_blank" rel="noreferrer" hidden>本地查看 ↗</a><button class="button button-secondary" id="save-draft" type="button">保存草稿</button><button class="button button-primary" id="publish-article" type="button">保存并发布到本地 <span aria-hidden="true">↗</span></button></div>
+          </div>
+          <div id="editor-notice" class="editor-notice" hidden></div>
+          <div id="editor-error" class="editor-error" role="alert" hidden></div>
+          <form id="article-form" novalidate>
+            <div class="editor-grid">
+              <div class="writing-column">
+                <div class="paper-card article-basics">
+                  <label class="field-label" for="title">文章标题 <span class="optional">可不填</span></label><input id="title" name="title" class="title-input" type="text" placeholder="写个标题，或从正文自动提取" autocomplete="off" />
+                  <p class="writing-intro">把文案粘贴到下方即可。分类、摘要、文章网址和商品关联，都可以交给 Codex 整理。</p>
+                </div>
+                <div class="paper-card content-card">
+                  <div class="content-card-header"><h2>文章正文 <span>*</span></h2><div class="view-tabs" role="group" aria-label="正文显示方式"><button type="button" data-mode="edit" class="active" aria-pressed="true">编辑</button><button type="button" data-mode="split" aria-pressed="false">分屏</button><button type="button" data-mode="preview" aria-pressed="false">预览</button></div></div>
+                  <div class="markdown-toolbar" id="markdown-toolbar" role="toolbar" aria-label="Markdown 格式"><button type="button" data-format="heading" title="二级标题">H2</button><button type="button" data-format="bold" title="加粗 (⌘/Ctrl+B)"><strong>B</strong></button><button type="button" data-format="italic" title="斜体 (⌘/Ctrl+I)"><i>I</i></button><span class="toolbar-divider"></span><button type="button" data-format="list" title="无序列表">☷ 列表</button><button type="button" data-format="quote" title="引用">“ 引用</button><button type="button" data-format="link" title="插入链接">↗ 链接</button><button type="button" data-format="code" title="代码">&lt;/&gt;</button><button type="button" data-format="table" title="表格">▦</button></div>
+                  <div class="content-workspace" id="content-workspace" data-mode="edit"><label class="sr-only" for="content">Markdown 正文</label><textarea id="content" name="content" spellcheck="false" placeholder="直接写下或粘贴你的完整文案…&#10;&#10;标题可以留空，整理时会从正文提取。&#10;不需要先填写分类、网址或关键词。"></textarea><div class="preview-pane" id="preview-pane" hidden><div class="preview-caption">文章预览 · 外链图片不加载</div><div id="preview-content" class="article-preview"><p class="preview-placeholder">写点内容，看看文章的样子。</p></div></div></div>
+                  <div class="content-footer"><span>支持 Markdown <span class="keyboard-hint">⌘ / Ctrl + S 保存草稿</span></span><span id="content-count">0 字 · 约 1 分钟</span></div>
+                </div>
+              </div>
+              <aside class="settings-column" aria-label="文章整理与设置">
+                <div class="paper-card organize-card">
+                  <div class="organize-mark" aria-hidden="true">✦</div>
+                  <h2>你写文案，Codex 来整理</h2>
+                  <p>自动分类、补摘要、生成文章网址，再匹配商品和站内相关教程。</p>
+                  <button class="button button-primary" id="organize-article" type="button">Codex 帮我整理 <span aria-hidden="true">✦</span></button>
+                  <button class="local-organize-button" id="organize-local" type="button">快速自动配置</button>
+                  <small>Codex 整理只回填设置，不改正文，也不会自动发文。直接发布时也会自动补齐设置。</small>
+                </div>
+                <div class="paper-card organized-card" id="organized-summary" aria-live="polite" hidden>
+                  <div class="organized-heading"><h2>文章已整理</h2><span id="organize-engine">自动配置</span></div>
+                  <p class="organize-message" id="organize-message"></p>
+                  <dl class="organized-fields"><div><dt>分类</dt><dd id="summary-category">—</dd></div><div><dt>文章网址</dt><dd id="summary-slug">生成后显示</dd></div><div><dt>关联商品</dt><dd id="summary-product">—</dd></div></dl>
+                  <div class="related-suggestions" id="related-suggestions" hidden><h3>可加入的相关教程</h3><ul id="related-posts"></ul><button class="button button-secondary" id="insert-related" type="button">插入相关教程</button><p>点击后才会添加到正文末尾。</p></div>
+                </div>
+                <details class="paper-card advanced-settings" id="advanced-settings">
+                  <summary>高级设置 <span>需要时再手动调整</span></summary>
+                  <div class="settings-card advanced-content">
+                    <div class="field-heading"><label class="field-label" for="description">摘要</label><span id="description-count" class="field-hint">0 字</span></div><textarea id="description" name="description" rows="3" placeholder="留空即可自动生成"></textarea>
+                    <label class="field-label" for="category">文章分类</label><select id="category" name="category"><option value="">自动识别分类</option></select>
+                    <label class="field-label" for="date">文章日期</label><input id="date" name="date" type="date" />
+                    <label class="field-label" for="slug">文章网址标识</label><div class="slug-prefix">/blog/</div><input id="slug" name="slug" type="text" placeholder="留空即可自动生成" autocomplete="off" spellcheck="false" /><p class="field-help" id="slug-help">自动生成可用网址，发布后保持链接不变。</p>
+                    <label class="field-label" for="keywords">关键词</label><input id="keywords" name="keywords" type="text" placeholder="留空即可自动提取" /><p class="field-help">手动填写时，用逗号分隔。</p>
+                    <label class="field-label" for="productId">关联商品</label><select id="productId" name="productId"><option value="">自动匹配商品</option></select>
+                    <label class="field-label" for="productUrl">商品链接</label><input id="productUrl" name="productUrl" type="url" placeholder="由关联商品自动匹配" />
+                    <label class="field-label" for="sourceUrl">来源链接</label><input id="sourceUrl" name="sourceUrl" type="url" placeholder="https://…" /><p class="field-help">手动调整的设置会优先保留。来源链接可选。</p>
+                  </div>
+                </details>
+                <div class="editor-tip"><span aria-hidden="true">✦</span><div><strong>只要文案，就能发布</strong><p>保存草稿方便下次继续。发布到本地只更新原项目文章，线上更新仍需后续部署。</p></div></div>
+                <button type="button" class="discard-button" id="discard-draft" hidden>丢弃这份草稿</button>
+              </aside>
+            </div>
+          </form>
+        </section>
+        <footer class="main-footer"><span>GPT PLUS APP</span> <span>好内容，值得认真对待。</span></footer>
+      </main>
+    </div>
+    <div id="toast-region" class="toast-region" aria-live="polite" aria-atomic="true"></div>
+  </body>
+</html>
