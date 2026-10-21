@@ -233,34 +233,19 @@ npm run import:telegram -- --source="/Users/cp/Downloads/Telegram Desktop" --lim
 
 ## 在线客服系统
 
-网站已预留 Tawk.to 在线客服接入。接入后，用户点击网页右下角客服按钮即可直接聊天，员工可以用 Tawk.to 电脑后台或手机 App 登录接待、回复和接收通知。
+网站通过 `components/live-chat-provider.tsx` 接入现有陈鹏 AI 客服系统，使用交付包 `ai-customer-test-kit-20261021.zip` 中的公开嵌入配置：
 
-Vercel 环境变量：
+- 脚本：`https://kf-test.gptplusapp.com/widget/embed.js`，保留原客服域名以确保脚本正确推导 API 地址。
+- 公开站点标识：`site_b380909894065bc7af86c05a`，不是 API Key，不需要在网站配置 DeepSeek、数据库或管理员密码。
+- 后台：`https://kf-test.gptplusapp.com/login`，沿用已有登录资料和知识库；该服务目前仍为预生产客服后端。
 
-```text
-NEXT_PUBLIC_TAWK_PROPERTY_ID=
-NEXT_PUBLIC_TAWK_WIDGET_ID=
-```
+右下角只保留原生客服 Widget 的一个入口，AI 自动答复为主，并按用户选择保留转人工备用。打开后可从“向我们发送消息”开始咨询；MANUAL 身份模式首次需要填写邮箱，称呼选填，不需要密码。刷新后由客服域 iframe 的浏览器存储恢复会话，隐私模式或第三方存储限制可能影响恢复。网页人工接待在客服后台同一站点的收件箱进行，不会自动转送到 Telegram 客服群。
 
-获取方式：
+`PrivacyAwareProviders` 在普通页面挂载一次客服脚本，正常站内导航不会重复创建 Widget。`/tools/gpt-billing` 及其子路径仍不加载客服或其他第三方组件，进入和离开使用整页导航；其 CSP 保持 `frame-src 'none'`。普通页面当前没有限制此客服域名的 CSP，无需放宽订阅工具的规则。
 
-1. 注册并登录 `https://www.tawk.to/`。
-2. 新建 Property，网站地址填 `https://www.gptplusapp.com/`。
-3. 在 Tawk.to 后台找到 Widget Code，通常格式类似：
+原 Tawk 脚本、旧客服耳机按钮及重复弹层已替换；升级入口浮钮上移至底部 100px，给原生 Widget 默认底部 18px 的位置留空间。加载脚本失败或 Widget 报告不可用时，显示通往 `/contact` 的备用联系入口。入口名称、位置、首次介绍弹窗及知识库由现有客服后台配置，本网站不另建或迁移客服数据库。
 
-```html
-https://embed.tawk.to/PROPERTY_ID/WIDGET_ID
-```
-
-4. 把 `PROPERTY_ID` 填到 `NEXT_PUBLIC_TAWK_PROPERTY_ID`。
-5. 把 `WIDGET_ID` 填到 `NEXT_PUBLIC_TAWK_WIDGET_ID`。
-6. 在 Vercel 项目 `Settings` → `Environment Variables` 添加上面两个变量，重新部署。
-
-员工接待方式：
-
-- 电脑端登录 Tawk.to Dashboard。
-- 手机安装 Tawk.to App，用员工账号登录。
-- 站长在 Tawk.to 后台邀请员工账号，不建议多人共用一个密码。
+验收应覆盖：首次邮箱进入、真实 AI 回复、刷新会话恢复、普通站内导航不重复挂载、手机端弹窗可关闭、订阅工具页没有客服脚本。人工消息往返需要工作人员在客服后台实际接管后验证，不能仅凭 AI 回复就宣称人工联调通过。
 
 备用联系方式集中在 `content/site.ts`：
 
@@ -496,7 +481,7 @@ ADMIN_PORT=4319 SITE_PREVIEW_PORT=3001 ADMIN_NO_OPEN=1 bash scripts/local-admin.
 
 实时查询的网络传输会优先使用 `HTTPS_PROXY` / `https_proxy`，并遵守 `NO_PROXY` / `no_proxy`。本地 macOS 未设置这些环境变量时，会读取电脑已经启用的 HTTPS 系统代理，仅用于当前账单查询请求；不会修改系统设置、环境变量或进程的全局代理。代理传输需要 Node.js 24.5+ 或 22.21+；当前桌面启动器使用的 Node.js 24.19.0 支持此能力。没有代理配置的部署环境继续直接请求 ChatGPT。连通性失败、凭证不被接受和上游拒绝访问会分别处理；能够建立连接仍不代表某个账号一定能返回账单。
 
-隐私实现：凭证仅在用户主动查询后，经本站服务器发往 ChatGPT，不写入文件、数据库、日志或浏览器存储，不放在 URL 中；返回值仅包含白名单订阅字段，不回传 Token 或原始响应。输入和结果可一键清空；查询页面不加载 Google Translate、Tawk 或 Analytics，配合专属 CSP 限制外部脚本及连接。进入及离开该工具采用整页导航，避免其他页面已加载的脚本留在同一文档中。查询接口设置不缓存、请求/响应大小限制、超时、来源检查和进程内限流；后者在多实例部署下不构成全局限流。
+隐私实现：凭证仅在用户主动查询后，经本站服务器发往 ChatGPT，不写入文件、数据库、日志或浏览器存储，不放在 URL 中；返回值仅包含白名单订阅字段，不回传 Token 或原始响应。输入和结果可一键清空；查询页面不加载 Google Translate、客服 Widget 或 Analytics，配合专属 CSP 限制外部脚本及连接。进入及离开该工具采用整页导航，避免其他页面已加载的脚本留在同一文档中。查询接口设置不缓存、请求/响应大小限制、超时、来源检查和进程内限流；后者在多实例部署下不构成全局限流。
 
 仅凭 AccountID 不能实时获取他人的账单。参考站的此模式依赖其自有历史记录，本项目不接入或复制该账号库。Session 的 `expires` 和 JWT 的 `exp` 仅为登录凭证有效期，绝不显示为会员到期时间。
 

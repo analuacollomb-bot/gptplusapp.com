@@ -70,9 +70,9 @@ const guideCards = [
   {
     title: "在线客服系统",
     icon: MessageCircle,
-    file: "NEXT_PUBLIC_TAWK_PROPERTY_ID / NEXT_PUBLIC_TAWK_WIDGET_ID",
+    file: "components/live-chat-provider.tsx",
     description:
-      "接入 Tawk.to 后，访客点击右下角客服按钮即可网页聊天，员工用电脑后台或手机 App 登录接待。备用微信号在 content/site.ts 维护。",
+      "右下角接入陈鹏 AI 客服，AI 自动回复为主，保留转人工备用。知识库和人工接待在 kf-test.gptplusapp.com 后台管理；首次咨询需邮箱，称呼选填。备用联系方式在 content/site.ts 维护。",
   },
   {
     title: "站点地图与收录",
@@ -94,7 +94,7 @@ const commands = [
   ["本地运行", "npm run dev"],
   ["抓取公开商品", "npm run scrape:products"],
   ["导入 TG 公开频道", "npm run import:telegram"],
-  ["配置在线客服", "Vercel 环境变量：NEXT_PUBLIC_TAWK_PROPERTY_ID / NEXT_PUBLIC_TAWK_WIDGET_ID"],
+  ["管理 AI 客服", "https://kf-test.gptplusapp.com/login（使用已有登录资料）"],
   ["生成文章", "npm run generate:articles"],
   ["生产构建", "npm run build"],
   ["查看 sitemap", "http://localhost:3000/sitemap.xml"],

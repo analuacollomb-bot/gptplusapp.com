@@ -1,17 +1,10 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
-  ArrowUpRight,
   Bookmark,
   Check,
-  Copy,
-  Headphones,
-  MessageCircle,
-  Search,
   ShoppingBag,
   X,
 } from "lucide-react";
@@ -22,8 +15,7 @@ const favoriteStorageKey = "gptplusapp-favorite-dismissed";
 export function ConversionWidgets() {
   const pathname = usePathname();
   const [showFavorite, setShowFavorite] = useState(false);
-  const [showService, setShowService] = useState(false);
-  const [copied, setCopied] = useState<"wechat" | "url" | null>(null);
+  const [copied, setCopied] = useState<"url" | null>(null);
   const orderUrl = pathname?.startsWith("/chatgpt")
     ? "https://gpt3plus.com/cat/19"
     : siteContent.primaryCtaUrl;
@@ -41,7 +33,7 @@ export function ConversionWidgets() {
     setShowFavorite(false);
   }
 
-  async function copyText(value: string, type: "wechat" | "url") {
+  async function copyText(value: string, type: "url") {
     try {
       await navigator.clipboard.writeText(value);
       setCopied(type);
@@ -49,15 +41,6 @@ export function ConversionWidgets() {
     } catch {
       setCopied(null);
     }
-  }
-
-  function openServicePanel() {
-    if (typeof window.Tawk_API?.maximize === "function") {
-      window.Tawk_API.maximize();
-      return;
-    }
-
-    setShowService((value) => !value);
   }
 
   return (
@@ -107,7 +90,7 @@ export function ConversionWidgets() {
         </div>
       ) : null}
 
-      <div className="fixed bottom-5 right-4 z-[65] flex flex-col items-end gap-3 sm:right-6">
+      <div className="fixed bottom-[100px] right-4 z-[65] flex flex-col items-end gap-3 sm:right-6">
         <a
           className="hidden items-center gap-3 rounded-full border border-[#d8c39b] bg-[linear-gradient(135deg,#d7ad5f,#9a6a2f)] px-5 py-3 text-sm font-black text-[#fff7e6] shadow-2xl shadow-[#9a6a2f]/25 transition hover:-translate-y-0.5 hover:brightness-110 sm:inline-flex"
           href={orderUrl}
@@ -118,96 +101,6 @@ export function ConversionWidgets() {
           升级入口
           <span className="text-xs uppercase tracking-[0.22em]">Premium</span>
         </a>
-
-        {showService ? (
-          <div className="w-[calc(100vw-2rem)] max-w-sm rounded-[1.75rem] border border-[#d8c39b] bg-[#fffaf0]/96 p-5 text-[#17110c] shadow-2xl shadow-[#2b2118]/18 backdrop-blur-xl">
-            <div className="flex items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <span className="relative size-12 overflow-hidden rounded-2xl border border-[#d7ad5f]/55 bg-[#17110c]">
-                  <Image
-                    src={siteContent.avatar}
-                    alt="陈鹏AI服务头像"
-                    fill
-                    sizes="48px"
-                    className="object-cover"
-                    unoptimized
-                  />
-                </span>
-                <div>
-                  <p className="text-base font-black">陈鹏AI服务</p>
-                  <p className="text-xs font-bold text-[#8a6b41]">稳定靠谱，不拼低价</p>
-                </div>
-              </div>
-              <button
-                aria-label="关闭客服面板"
-                className="rounded-full p-2 text-[#6e6257] transition hover:bg-[#fff5dc] hover:text-[#17110c]"
-                onClick={() => setShowService(false)}
-                type="button"
-              >
-                <X aria-hidden="true" className="size-4" />
-              </button>
-            </div>
-
-            <div className="mt-5 rounded-2xl border border-[#ead9b8] bg-[#fff5dc] p-4">
-              <p className="text-sm font-black text-[#17110c]">客服入口</p>
-              <p className="mt-2 text-sm leading-7 text-[#6e6257]">
-                在线客服繁忙时，可以先添加陈鹏个人微信。
-                <br />
-                微信号：{siteContent.wechatId}
-                <br />
-                商务合作、售前售后咨询，添加请备注来意。
-                <br />
-                服务时间：{siteContent.serviceHours}
-              </p>
-            </div>
-
-            <div className="mt-4 grid gap-2">
-              <button
-                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-[#d8c39b] bg-[#fffaf0] px-4 py-2 text-sm font-black text-[#3a2817] transition hover:bg-white"
-                onClick={() => copyText(siteContent.wechatId, "wechat")}
-                type="button"
-              >
-                {copied === "wechat" ? <Check aria-hidden="true" className="size-4" /> : <Copy aria-hidden="true" className="size-4" />}
-                {copied === "wechat" ? "微信已复制" : "复制客服微信"}
-              </button>
-              <a
-                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-[#8c612b] bg-[linear-gradient(135deg,#1a120c,#3a2817_54%,#9a6a2f)] px-4 py-2 text-sm font-black text-[#fff7e6] transition hover:brightness-110"
-                href={orderUrl}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <ShoppingBag aria-hidden="true" className="size-4" />
-                前往自助下单
-                <ArrowUpRight aria-hidden="true" className="size-4" />
-              </a>
-              <a
-                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-[#d8c39b] bg-[#fffaf0] px-4 py-2 text-sm font-black text-[#3a2817] transition hover:bg-white"
-                href={siteContent.orderQueryUrl}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <Search aria-hidden="true" className="size-4" />
-                查询订单
-              </a>
-              <Link
-                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-[#d8c39b] bg-[#fffaf0] px-4 py-2 text-sm font-black text-[#3a2817] transition hover:bg-white"
-                href="/contact"
-              >
-                <MessageCircle aria-hidden="true" className="size-4" />
-                售后需要准备什么
-              </Link>
-            </div>
-          </div>
-        ) : null}
-
-        <button
-          className="service-float-button inline-flex size-16 items-center justify-center rounded-full border border-[#d7ad5f]/70 bg-[linear-gradient(135deg,#1a120c,#6b451a_52%,#d7ad5f)] text-[#fff7e6] shadow-2xl shadow-[#9a6a2f]/35 transition hover:-translate-y-0.5 hover:brightness-110"
-          onClick={openServicePanel}
-          type="button"
-        >
-          <span className="sr-only">打开在线客服</span>
-          <Headphones aria-hidden="true" className="size-7" />
-        </button>
       </div>
     </>
   );
