@@ -361,6 +361,7 @@ export const footerColumns = [
       { label: "实时博客", href: "/telegram" },
       { label: "全部教程", href: "/blog" },
       { label: "商品入口", href: "/products" },
+      { label: "ChatGPT 订阅查询", href: "/tools/gpt-billing" },
       { label: "用户反馈", href: "/reviews" },
       { label: "帮助中心", href: "/help" },
       { label: "常见问题", href: "/faq" },

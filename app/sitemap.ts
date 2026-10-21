@@ -9,6 +9,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/topics",
     "/telegram",
     "/products",
+    "/tools/gpt-billing",
     "/blog",
     "/reviews",
     "/help",

@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Script from "next/script";
+import { usePathname } from "next/navigation";
 import { Check, ChevronDown, Globe2 } from "lucide-react";
 
 type LanguageCode = "zh-CN" | "zh-TW" | "en";
@@ -128,6 +129,28 @@ function applyGoogleTranslate(language: LanguageCode) {
 }
 
 export function LanguageSwitcher() {
+  const pathname = usePathname();
+
+  if (
+    pathname === "/tools/gpt-billing" ||
+    pathname.startsWith("/tools/gpt-billing/")
+  ) {
+    return (
+      <span
+        className="inline-flex min-h-10 items-center justify-center gap-2 whitespace-nowrap rounded-lg border border-[#d8c39b] bg-[#fffaf0] px-3 py-2 text-sm font-bold text-[#3a2817]"
+        translate="no"
+      >
+        <Globe2 aria-hidden="true" className="size-4 text-[#9a6a2f]" />
+        <span className="hidden sm:inline">简体中文</span>
+        <span className="sm:hidden">中</span>
+      </span>
+    );
+  }
+
+  return <TranslatableLanguageSwitcher />;
+}
+
+function TranslatableLanguageSwitcher() {
   const [selectedLanguage, setSelectedLanguage] = useState<LanguageCode>("zh-CN");
   const [isOpen, setIsOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);

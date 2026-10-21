@@ -1,7 +1,7 @@
 import Image from "next/image";
-import Link from "next/link";
 import { ArrowUpRight, ShieldAlert } from "lucide-react";
 import { siteContent } from "@/content/site";
+import { PrivacyAwareLink as Link } from "@/components/privacy-aware-providers";
 import { footerColumns, siteConfig } from "@/lib/site";
 
 export function SiteFooter() {

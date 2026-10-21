@@ -37,6 +37,7 @@ export const siteContent = {
     { label: "专题", href: "/topics" },
     { label: "实时博客", href: "/telegram" },
     { label: "商品", href: "/products" },
+    { label: "订阅查询", href: "/tools/gpt-billing" },
     { label: "教程", href: "/blog" },
     { label: "评价", href: "/reviews" },
     { label: "帮助", href: "/help" },

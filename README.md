@@ -464,3 +464,28 @@ ADMIN_PORT=4319 SITE_PREVIEW_PORT=3001 ADMIN_NO_OPEN=1 bash scripts/local-admin.
 ```
 
 如需指定 Node.js 路径，可设置 `NODE_BIN=/完整路径/node` 后运行同一命令。
+
+## ChatGPT 订阅查询工具
+
+导航“商品”和“教程”之间的 **订阅查询** 进入 `/tools/gpt-billing`，桌面、手机和页脚均有入口。
+
+- **快速查询**：输入用户本人的 ChatGPT Access Token 或完整 Session JSON，读取当前账号套餐及接口实际返回的权益信息。
+- **深度查询**：在账号查询基础上，补充所选账号的订阅账期、到期时间、自动续费和欠费状态；字段未返回时保持“未知”，部分查询失败会明确提示。
+- **本地解析**：只在浏览器读取已有账单 JSON，不联网，也不把 Token 声明当成已经核实的订阅信息。
+
+实时查询只使用本站 `POST /api/tools/gpt-billing` 接口。服务端只允许对 `chatgpt.com` 的账号检查及订阅查询路径执行 GET，不接收任意上游地址，不会取消订阅、付款或改动账号。个人 ChatGPT 账单与 API Platform 账单不是同一服务，无需填写 OpenAI API Key。
+
+这里使用 ChatGPT 网页端查询接口，**不是保证长期兼容的公开账单 API**。访问环境、账号权限或上游变动都可能导致拒绝请求；遇到这种情况会报出可理解的错误，不回退到不明代理或参考站。真实账号的最终结果应以 ChatGPT 设置中的账单页面为准。未提供真实凭证时，仅能验证解析和模拟上游响应，不能声称已完成真实账号联调。
+
+实时查询的网络传输会优先使用 `HTTPS_PROXY` / `https_proxy`，并遵守 `NO_PROXY` / `no_proxy`。本地 macOS 未设置这些环境变量时，会读取电脑已经启用的 HTTPS 系统代理，仅用于当前账单查询请求；不会修改系统设置、环境变量或进程的全局代理。代理传输需要 Node.js 24.5+ 或 22.21+；当前桌面启动器使用的 Node.js 24.19.0 支持此能力。没有代理配置的部署环境继续直接请求 ChatGPT。连通性失败、凭证不被接受和上游拒绝访问会分别处理；能够建立连接仍不代表某个账号一定能返回账单。
+
+隐私实现：凭证仅在用户主动查询后，经本站服务器发往 ChatGPT，不写入文件、数据库、日志或浏览器存储，不放在 URL 中；返回值仅包含白名单订阅字段，不回传 Token 或原始响应。输入和结果可一键清空；查询页面不加载 Google Translate、Tawk 或 Analytics，配合专属 CSP 限制外部脚本及连接。进入及离开该工具采用整页导航，避免其他页面已加载的脚本留在同一文档中。查询接口设置不缓存、请求/响应大小限制、超时、来源检查和进程内限流；后者在多实例部署下不构成全局限流。
+
+仅凭 AccountID 不能实时获取他人的账单。参考站的此模式依赖其自有历史记录，本项目不接入或复制该账号库。Session 的 `expires` 和 JWT 的 `exp` 仅为登录凭证有效期，绝不显示为会员到期时间。
+
+本地运行 `npm run admin` 后可访问 `http://127.0.0.1:3000/tools/gpt-billing`。定向验证：
+
+```bash
+node --import tsx --test lib/gpt-billing.test.ts lib/gpt-billing-server.test.ts lib/gpt-billing-network.test.ts
+npx tsc --noEmit
+```
