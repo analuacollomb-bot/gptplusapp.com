@@ -290,7 +290,13 @@ https://www.gptplusapp.com/sitemap.xml
 
 再手动请求索引首页、`/topics`、`/telegram`、四个产品页、强搜索词专题页、几篇核心文章和最新导入的实时博客文章。
 
-## 部署到 Vercel
+## 部署到自有服务器
+
+现有网站可通过 Next.js standalone、独立 systemd 服务及现有 Nginx 运行在 Vultr，不需要重建网站或迁移文章网址。服务器部署、HTTPS 续期、更新及回滚步骤见 [Vultr 部署说明](docs/vultr-deployment.md)，配置模板位于 `deploy/vultr/`。本机文章后台和 Codex 登录资料不部署到公网。
+
+## 历史 Vercel 部署方式
+
+以下保留早期部署记录；迁往自有服务器时使用上方说明，不需要再新建 Vercel 项目。
 
 1. 将项目推送到 GitHub。
 2. 登录 Vercel，选择 `Add New Project`。

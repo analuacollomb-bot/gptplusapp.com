@@ -1,0 +1,11 @@
+[Unit]
+Description=Check gptplusapp.com HTTPS renewal twice daily
+
+[Timer]
+OnCalendar=*-*-* 03,15:20:00 UTC
+RandomizedDelaySec=30m
+Persistent=true
+Unit=gptplusapp-certbot.service
+
+[Install]
+WantedBy=timers.target

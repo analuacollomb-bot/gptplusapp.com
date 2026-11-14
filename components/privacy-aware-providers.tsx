@@ -25,7 +25,7 @@ export function PrivacyAwareProviders() {
     <>
       <LiveChatProvider />
       <ConversionWidgets />
-      <Analytics />
+      {process.env.NEXT_PUBLIC_SELF_HOSTED !== "1" && <Analytics />}
     </>
   );
 }

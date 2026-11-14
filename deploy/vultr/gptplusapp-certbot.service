@@ -1,0 +1,11 @@
+[Unit]
+Description=Renew HTTPS certificate for gptplusapp.com
+Wants=network-online.target
+After=network-online.target nginx.service
+
+[Service]
+Type=oneshot
+UMask=0077
+Nice=10
+TimeoutStartSec=5min
+ExecStart=/opt/gptplusapp/acme-venv/bin/certbot renew --cert-name gptplusapp.com --quiet --deploy-hook /opt/gptplusapp/bin/reload-nginx

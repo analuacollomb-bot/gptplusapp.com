@@ -16,6 +16,9 @@ const billingToolCsp = [
 ].join("; ");
 
 const nextConfig: NextConfig = {
+  output: "standalone",
+  // Limit build workers on the shared VPS without slowing local builds.
+  experimental: process.env.GPTPLUSAPP_BUILD_CPUS === "1" ? { cpus: 1 } : undefined,
   async headers() {
     return [
       {
