@@ -292,7 +292,7 @@ https://www.gptplusapp.com/sitemap.xml
 
 ## 部署到自有服务器
 
-现有网站可通过 Next.js standalone、独立 systemd 服务及现有 Nginx 运行在 Vultr，不需要重建网站或迁移文章网址。服务器部署、HTTPS 续期、更新及回滚步骤见 [Vultr 部署说明](docs/vultr-deployment.md)，配置模板位于 `deploy/vultr/`。本机文章后台和 Codex 登录资料不部署到公网。
+现有网站已于 2026-11-15 切换到用户 Vultr 服务器 `207.148.94.8`，通过 Next.js standalone、独立 systemd 服务及现有 Nginx 运行；正式入口为 `https://www.gptplusapp.com`，HTTPS 与自动续期已启用。1,527 篇原文章及网址保留。服务器部署记录、HTTPS 续期、更新及回滚步骤见 [Vultr 部署说明](docs/vultr-deployment.md)，配置模板位于 `deploy/vultr/`。本机文章后台和 Codex 登录资料不部署到公网。
 
 ## 历史 Vercel 部署方式
 

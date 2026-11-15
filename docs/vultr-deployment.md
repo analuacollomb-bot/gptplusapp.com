@@ -1,6 +1,18 @@
 # gptplusapp.com 自托管部署
 
-本说明用于把现有项目部署到用户已有的 Vultr 服务器，保留文章、页面地址、商品链接和客服入口。它是部署模板与操作说明，不表示正式域名已经切换或网站已经上线；以实际 HTTP、TLS 和浏览器验收为准。
+本说明记录现有项目在用户 Vultr 服务器上的部署、更新和回滚方法，保留文章、页面地址、商品链接和客服入口。
+
+## 2026-11-15 正式切换记录
+
+- 用户已手动调整 NameSilo 解析：根域 A 为 `207.148.94.8`，`www` CNAME 为 `gptplusapp.com`。DNSOWL 三台权威服务器及公共解析器已验证。
+- 当前 release 为 `/opt/gptplusapp/releases/20261114-82f08e9-vps1`；原内容版本为 `82f08e902dc5f3ce5c3ca6362fb872d10c68d723`，迁移代码提交为 `7d911c6516be18444c4ea1b59f0e9fd47fc70c9b`。Linux 构建生成 1,575 个页面；1,527 篇文章逐文件 SHA-256 校验通过，站点地图文章 URL 数为 1,527。
+- `gptplusapp.service` 已启用开机启动，仅监听 `127.0.0.1:3068`；宝塔现有 Nginx 转发本站流量。HTTP 和根域 HTTPS 均 308 到 `https://www.gptplusapp.com`，保留路径与查询参数。
+- Let’s Encrypt 正式证书已签发，覆盖根域与 `www`，本次证书到期时间为 `2027-02-13 01:11:14 UTC`。专用续期 timer 已启用，带 Nginx 检查及 reload hook 的续期 dry-run 已通过。
+- 外网直连检查：首页、文章列表、抽查文章、联系页、商品页、订阅查询页、站点地图、RSS、robots、头像与页面静态资源返回 HTTPS 200。首页、联系页与文章仍含原耳机入口和客服脚本；订阅查询页保持独立 CSP、不缓存、无客服脚本，生产实时查询继续关闭。
+- 原商城 `https://gpt3plus.com` 返回 200，原数据库、PHP 和支付进程仍在运行；未进行真实付款或发送客服测试消息。
+- 本机 `7890` 代理路径当时仍命中旧 Vercel 402，Chrome 因该路径未完成新站视觉验收；默认 DNS 直连已验证连接到 `207.148.94.8`，证书校验通过。代理缓存与公网直连结果应分别判断。
+
+服务器的 `/opt/gptplusapp/DEPLOYMENT.json` 保存当前 release、源码校验值和验收记录。Nginx 切换前备份在 `/opt/gptplusapp/backups/20261114/`。后续发布仍应重新验收，不能只依据本次记录判断新版本已经上线。
 
 ## 目标环境与边界
 
@@ -163,7 +175,18 @@ curl --resolve www.gptplusapp.com:80:207.148.94.8 \
 7. 再次 Nginx `-t`，成功后 reload。验证根域 HTTP / HTTPS 均跳转到 `https://www.gptplusapp.com`，路径和查询参数保留。
 8. 检查已有证书续期 timer / 定时任务，配置续期成功后对同一 Nginx 执行检查和 reload，避免重复建立 ACME 定时任务；执行客户端的续期 dry-run 验证。
 
-本次专用续期 hook 安装为 `/opt/gptplusapp/bin/reload-nginx`，由 root 所有，应用用户不可修改。专用 timer 固定只处理 `gptplusapp.com` 证书，不接管宝塔已有站点的证书；在首次签发成功后才启用。它在 UTC 03:20 / 15:20 附近随机延迟最多 30 分钟检查，错过执行会在开机后补做。
+本次专用续期 hook 安装为 `/opt/gptplusapp/bin/reload-nginx`，由 root 所有，应用用户不可修改。专用 timer 固定只处理 `gptplusapp.com` 证书，不接管宝塔已有站点的证书；在首次签发成功后才启用。它在 UTC 03:20 / 15:20 附近随机延迟最多 30 分钟检查，错过执行会在开机后补做。服务使用 `--no-random-sleep-on-renew` 关闭 Certbot 自带的第二层随机等待，避免等待本身超过服务的 5 分钟超时。
+
+后续可只读查看 timer 与日志；需要验证续期时使用：
+
+```sh
+systemctl list-timers gptplusapp-certbot.timer --no-pager
+journalctl -u gptplusapp-certbot.service --no-pager
+/opt/gptplusapp/acme-venv/bin/certbot renew \
+  --cert-name gptplusapp.com --dry-run --run-deploy-hooks \
+  --no-random-sleep-on-renew --non-interactive \
+  --deploy-hook /opt/gptplusapp/bin/reload-nginx
+```
 
 最终 Nginx 模板所有应用请求都反代给 Node.js，不为 API 或账单查询增加共享缓存，也不重写应用的 CSP 和 Cache-Control。`/_next/static/` 的浏览器缓存由 Next.js 原有响应头控制。若以后接入 CDN，应另行配置可信代理和真实访客地址，不直接信任任意客户端传来的转发头。
 
