@@ -294,6 +294,8 @@ https://www.gptplusapp.com/sitemap.xml
 
 现有网站已于 2026-11-15 切换到用户 Vultr 服务器 `207.148.94.8`，通过 Next.js standalone、独立 systemd 服务及现有 Nginx 运行；正式入口为 `https://www.gptplusapp.com`，HTTPS 与自动续期已启用。1,527 篇原文章及网址保留。服务器部署记录、HTTPS 续期、更新及回滚步骤见 [Vultr 部署说明](docs/vultr-deployment.md)，配置模板位于 `deploy/vultr/`。本机文章后台和 Codex 登录资料不部署到公网。
 
+2026-11-16 已新增 Gemini Pro / Ultra 一个月独享图文文章，当前共 1,528 篇；文章、首页、分类、列表、RSS 和站点地图均已在自有服务器更新。
+
 ## 历史 Vercel 部署方式
 
 以下保留早期部署记录；迁往自有服务器时使用上方说明，不需要再新建 Vercel 项目。

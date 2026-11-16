@@ -2,6 +2,14 @@
 
 本说明记录现有项目在用户 Vultr 服务器上的部署、更新和回滚方法，保留文章、页面地址、商品链接和客服入口。
 
+## 2026-11-16 Gemini 图文文章发布
+
+- 当前 release 更新为 `/opt/gptplusapp/releases/20261116-641a6ef-gemini`，源码提交 `641a6ef2631f0f565943d8c8409bcec6809d9430`。
+- 新增 `/blog/gemini-pro-ultra-monthly-account-guide`：Gemini Pro / Ultra 一个月独享成品号介绍，含规格对比、五步上手说明、售后信息、站内链接及原创 AI 风景配图。封面为 1440 × 810 WebP，约 180 KB，保存在 `public/images/articles/gemini-pro-ultra/`。
+- 原有 1,527 篇文章未改动；当前共 1,528 篇，运行包逐文件 SHA-256 核对通过。Linux 构建、TypeScript、候选进程及正式进程检查通过；正式 HTTPS 的文章、图片、首页、Gemini 分类、文章列表、站点地图、RSS 与四项静态资源均返回 200。Chrome 已打开正式文章并显示配图。
+- 保留上次 release，先在回环端口 `3069` 验证，再原子切换 `current` 并仅重启 `gptplusapp.service`。候选服务已停止；Nginx、DNS、证书、原商城及支付服务未作调整。运行包保留上一版本静态资源，供已打开旧页面的访客继续加载。
+- 当前商品记录没有准确对应的 Pro / Ultra 20X 一个月商品，文章链接至 `https://gpt3plus.com/`，未凭旧商品标题硬配链接或补写价格。生产实时订阅查询继续关闭，工具页面隔离检查通过。
+
 ## 2026-11-15 正式切换记录
 
 - 用户已手动调整 NameSilo 解析：根域 A 为 `207.148.94.8`，`www` CNAME 为 `gptplusapp.com`。DNSOWL 三台权威服务器及公共解析器已验证。
